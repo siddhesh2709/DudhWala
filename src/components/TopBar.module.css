@@ -1,4 +1,4 @@
-/* TopBar */
+/* TopBar — clean redesign with high visibility back button */
 .bar {
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -8,22 +8,36 @@
   align-items: center;
   justify-content: space-between;
   position: sticky; top: 0; z-index: 60;
+  box-shadow: var(--shadow-sm);
 }
-.left { display: flex; align-items: center; gap: 10px; }
+.left { display: flex; align-items: center; gap: 11px; }
 .back {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 9px; color: var(--text2);
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 18px;
-  transition: all var(--trans); font-family: inherit;
+  background: var(--green-lt);
+  border: 1.5px solid var(--green-border);
+  border-radius: 10px;
+  color: var(--green);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 900;
+  transition: all var(--trans);
+  font-family: inherit;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.12);
 }
-.back:hover { background: var(--border); }
+.back:hover {
+  background: var(--green);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
 .logo { display: flex; align-items: center; gap: 9px; }
 .pill {
-  width: 32px; height: 32px; border-radius: 9px;
+  width: 34px; height: 34px; border-radius: 10px;
   background: var(--green-lt); border: 1px solid var(--green-border);
-  display: flex; align-items: center; justify-content: center; font-size: 17px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
 }
-.name { font-size: 16px; font-weight: 800; color: var(--text); }
+.name { font-size: 16.5px; font-weight: 900; color: var(--text); letter-spacing: -0.2px; }
 .right { display: flex; align-items: center; }

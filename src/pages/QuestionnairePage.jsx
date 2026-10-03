@@ -6,7 +6,7 @@ import { COW_QS, CALF_QS } from '../questions';
 import { fmt, todayKey } from '../store';
 
 export default function QuestionnairePage({ type, onBack, showToast }) {
-  const { state, saveCowEntry, saveCalfEntry } = useApp();
+  const { state, saveCowEntry, saveCalfEntry, updatePrices } = useApp();
   const QS = type === 'cow' ? COW_QS : CALF_QS;
   const dk = todayKey();
   const existing = type === 'cow' ? state.records[dk]?.cow : state.records[dk]?.calf;
@@ -136,18 +136,31 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
             onYN={pickYN} onSel={setSelPick} prices={prices} type={type} step={step}
             currVal={currVal} onValChange={setCurrVal} onEnter={goNext}
           />
+
+          {/* Action buttons directly inside/below question card */}
+          {q.type !== 'yn' && (
+            <div className={styles.cardActions}>
+              <button className={styles.inlineBackBtn} onClick={goBack} disabled={step===0}>← मागे</button>
+              <button
+                className={`${styles.inlineNextBtn} ${canGoNext ? styles.nextBtnReady : ''}`}
+                onClick={goNext}
+              >
+                {isLast ? '✅ सारांश बघा' : 'पुढे जा →'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom bar (hidden for YN — auto-advance) */}
+      {/* Fixed Bottom bar fallback */}
       {q.type !== 'yn' && (
         <div className={styles.actionBar}>
-          <button className={styles.backBtn} onClick={goBack} disabled={step===0}>←</button>
+          <button className={styles.backBtn} onClick={goBack} disabled={step===0}>← मागे</button>
           <button
             className={`${styles.nextBtn} ${canGoNext ? styles.nextBtnReady : ''}`}
             onClick={goNext}
           >
-            {isLast ? '✅ सारांश बघा' : 'पुढे →'}
+            {isLast ? '✅ सारांश बघा' : 'पुढे जा →'}
           </button>
         </div>
       )}
@@ -300,15 +313,28 @@ function SummaryView({ type, entry: e, prices, onBack, onSave }) {
   }
 
   return (
-    <div className={styles.page} style={{paddingBottom:110}}>
+    <div className={styles.page} style={{paddingBottom:120}}>
       <div className={styles.sumHeader}>
         <button className={styles.sumBack} onClick={onBack}>← बदल करा</button>
-        <h2 className={styles.sumTitle}>📋 सारांश</h2>
+        <h2 className={styles.sumTitle}>📋 सारांश व पडताळणी</h2>
       </div>
-      <div className={styles.body}>{content}</div>
+
+      <div className={styles.body}>
+        {content}
+
+        {/* High-Visibility Final Submission Button directly in Summary */}
+        <div className={styles.finalSubmitWrap}>
+          <button className={styles.btnFinalSave} onClick={onSave}>
+            💾 आजची नोंद पूर्ण करा (जतन करा) →
+          </button>
+        </div>
+      </div>
+
       <div className={styles.actionBar}>
-        <button className={styles.backBtn} onClick={onBack}>←</button>
-        <button className={styles.nextBtn} onClick={onSave}>💾 नोंद जतन करा</button>
+        <button className={styles.backBtn} onClick={onBack}>← मागे</button>
+        <button className={`${styles.nextBtn} ${styles.nextBtnReady}`} onClick={onSave}>
+          💾 आजची नोंद पूर्ण करा →
+        </button>
       </div>
     </div>
   );
