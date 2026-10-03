@@ -129,6 +129,13 @@ export function AppProvider({ children }) {
     updateState(data);
   }, [updateState]);
 
+  const logout = useCallback(() => {
+    setActiveAccountKey(null);
+    const fresh = { profile: null, records: {} };
+    saveState(fresh);
+    setState(fresh);
+  }, []);
+
   const resetData = useCallback(() => {
     const fresh = { profile: null, records: {} };
     setActiveAccountKey(null);
@@ -145,6 +152,7 @@ export function AppProvider({ children }) {
       updatePrices,
       updateAnimals,
       importData,
+      logout,
       resetData,
       loginOrSyncAccount,
     }}>

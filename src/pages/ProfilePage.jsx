@@ -7,7 +7,7 @@ import styles from './ProfilePage.module.css';
 import { fmt, fmtDate, p2, fmtMonth, MR_MONTHS } from '../store';
 
 export default function ProfilePage({ onSwitchTab, showToast }) {
-  const { state, updatePrices, updateAnimals, setProfile, importData, resetData } = useApp();
+  const { state, updatePrices, updateAnimals, setProfile, importData, logout, resetData } = useApp();
   const { profile, records } = state;
   const [repMonth, setRepMonth] = useState(new Date());
   
@@ -182,6 +182,11 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
     };
     rd.readAsText(file); e.target.value='';
   }
+  function doLogout() {
+    if (confirm('लॉगआउट करायचे का?\n\n(तुमचा सर्व डेटा सुरक्षित राहील. पुन्हा लॉगइन करण्यासाठी फार्मचे नाव, मालकाचे नाव व पासवर्ड वापरा.)')) {
+      logout();
+    }
+  }
   function doReset() {
     if (confirm('सर्व डेटा मिटवायचा का? हे पूर्ववत होणार नाही!')) { resetData(); window.location.reload(); }
   }
@@ -303,7 +308,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
           </p>
         </div>
 
-        <ProfRow icon="🔄" label="दुसरा फार्म / खाते लॉगइन करा" right="→" onClick={() => { if (confirm('दुसऱ्या डिव्हाइस/फार्म खात्यावर लॉगइन करायचे का?')) { resetData(); window.location.reload(); } }} />
+        <ProfRow icon="🚪" label="प्रोफाइल लॉगआउट करा" right="लॉगआउट →" onClick={doLogout} />
         <ProfRow icon="📤" label="डेटा Export करा" right="JSON" onClick={exportData} />
         <ProfRow icon="📥" label="डेटा Import करा" right="JSON" onClick={() => document.getElementById('imp-file').click()} />
         <input type="file" id="imp-file" accept=".json" style={{display:'none'}} onChange={handleImport} />
