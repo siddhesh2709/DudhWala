@@ -64,16 +64,6 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
         }
       </div>
 
-      {/* Today stats */}
-      <div className={styles.secHead}>आजचा सारांश</div>
-        <div className={styles.cardsGrid}>
-          <StatCard icon="🥛" color="blue"   label="आजचे दूध"    value={fmtL(cow.totalMilk)} />
-          <StatCard icon="💰" color="green"  label="आजचे उत्पन्न" value={fmt(cow.milkIncome)} />
-          <StatCard icon="💸" color="red"    label="आजचा खर्च"   value={fmt(cow.totalExpense)} />
-          <StatCard icon="📈" color={((cow.milkIncome||0)-(cow.totalExpense||0))>=0?'green':'red'}
-            label="निव्वळ" value={fmt((cow.milkIncome||0)-(cow.totalExpense||0))} />
-        </div>
-
       {/* Entry button */}
       <div className={styles.secHead}>आजची नोंद</div>
       <div className={styles.entryCard} onClick={() => onGoEntry('cow')}>
@@ -88,6 +78,16 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
           {cowDone ? '✓ झाले' : 'भरा →'}
         </span>
       </div>
+
+      {/* Today stats */}
+      <div className={styles.secHead}>आजचा सारांश</div>
+        <div className={styles.cardsGrid}>
+          <StatCard icon="🥛" color="blue"   label="आजचे दूध"    value={fmtL(cow.totalMilk)} />
+          <StatCard icon="💰" color="green"  label="आजचे उत्पन्न" value={fmt(cow.milkIncome)} />
+          <StatCard icon="💸" color="red"    label="आजचा खर्च"   value={fmt(cow.totalExpense)} />
+          <StatCard icon="📈" color={((cow.milkIncome||0)-(cow.totalExpense||0))>=0?'green':'red'}
+            label="निव्वळ" value={fmt((cow.milkIncome||0)-(cow.totalExpense||0))} />
+        </div>
 
       {/* Monthly summary */}
       <div className={styles.secHead}>या महिन्याचा सारांश</div>

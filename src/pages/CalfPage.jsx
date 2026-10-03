@@ -60,6 +60,20 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
         }
       </div>
 
+      <div className={styles.secHead}>आजची नोंद</div>
+      <div className={styles.entryCard} onClick={() => onGoEntry('calf')}>
+        <div className={styles.ecLeft}>
+          <span className={styles.ecIcon}>🐮</span>
+          <div>
+            <div className={styles.ecTitle}>वासरे दैनंदिन नोंद</div>
+            <div className={styles.ecSub}>चारा, दूध, डॉक्टर, मेडिकल</div>
+          </div>
+        </div>
+        <span className={`${styles.ecBadge} ${calfDone ? styles.done : styles.todo}`}>
+          {calfDone ? '✓ झाले' : 'भरा →'}
+        </span>
+      </div>
+
       <div className={styles.secHead}>आजचा सारांश</div>
       <div className={styles.cardsWrap}>
         <div className={styles.cardsGrid}>
@@ -74,20 +88,6 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
             <div className={`${styles.scValue} ${styles.v_red}`}>{fmt(calf.totalExpense)}</div>
           </div>
         </div>
-      </div>
-
-      <div className={styles.secHead}>आजची नोंद</div>
-      <div className={styles.entryCard} onClick={() => onGoEntry('calf')}>
-        <div className={styles.ecLeft}>
-          <span className={styles.ecIcon}>🐮</span>
-          <div>
-            <div className={styles.ecTitle}>वासरे दैनंदिन नोंद</div>
-            <div className={styles.ecSub}>चारा, दूध, डॉक्टर, मेडिकल</div>
-          </div>
-        </div>
-        <span className={`${styles.ecBadge} ${calfDone ? styles.done : styles.todo}`}>
-          {calfDone ? '✓ झाले' : 'भरा →'}
-        </span>
       </div>
 
       <div className={styles.secHead}>या महिन्याचा सारांश</div>
