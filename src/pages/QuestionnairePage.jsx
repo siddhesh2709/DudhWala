@@ -213,8 +213,6 @@ function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, s
         placeholder={placeholder}
         className={styles.inp}
         style={{ paddingLeft: q.pre ? 44 : 16, paddingRight: q.suf ? 64 : 16 }}
-        onFocus={(e) => e.target.select()}
-        onClick={(e) => e.target.select()}
         onChange={handleInput}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {

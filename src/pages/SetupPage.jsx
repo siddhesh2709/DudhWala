@@ -87,7 +87,7 @@ export default function SetupPage({ onDone }) {
               <div className={styles.group} key={k}>
                 <label className={styles.label}>{l}</label>
                 <input className={`${styles.input} ${styles.numBig}`} type="number" inputMode="numeric" pattern="[0-9]*"
-                  value={form[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => set(k, e.target.value)} />
+                  value={form[k]} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
           </>
@@ -108,7 +108,7 @@ export default function SetupPage({ onDone }) {
               <div className={styles.group} key={k}>
                 <label className={styles.label}>{l}</label>
                 <input className={styles.input} type="number" inputMode="numeric" pattern="[0-9]*"
-                  value={form[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => set(k, e.target.value)} />
+                  value={form[k]} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
           </>

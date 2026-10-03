@@ -206,7 +206,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
             <div className={styles.group} key={k}>
               <label className={styles.fLabel}>{l}</label>
               <input className={styles.fInput} type="number" inputMode="numeric" pattern="[0-9]*"
-                value={prices[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => setPrices(p => ({...p,[k]:e.target.value}))} />
+                value={prices[k]} onChange={e => setPrices(p => ({...p,[k]:e.target.value}))} />
             </div>
           ))}
           <button className={styles.btnGreen} onClick={savePrices}>💾 किमती जतन करा</button>
@@ -233,7 +233,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
               <div className={styles.group} key={k}>
                 <label className={styles.fLabel}>{l}</label>
                 <input className={`${styles.fInput} ${styles.numBig}`} type="number" inputMode="numeric" pattern="[0-9]*"
-                  value={animalForm[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => setAnimalForm(f => ({...f,[k]:e.target.value}))} />
+                  value={animalForm[k]} onChange={e => setAnimalForm(f => ({...f,[k]:e.target.value}))} />
               </div>
             ))}
             <button className={styles.btnGreen} onClick={saveAnimals}>💾 जतन करा</button>
