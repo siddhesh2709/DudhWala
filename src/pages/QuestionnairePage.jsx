@@ -16,6 +16,8 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
   const [ynPick, setYnPick] = useState(null);
   const [selPick, setSelPick] = useState(null);
 
+  const [currVal, setCurrVal] = useState('');
+
   const visQ = QS.filter(q => !q.when || q.when(entry));
   const [step, setStep] = useState(0);
   const q = visQ[step];
@@ -23,25 +25,28 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
   const isLast = step === total - 1;
   const prices = state.profile?.prices || {};
 
+  useEffect(() => {
+    setCurrVal(entry[q?.id] !== undefined ? String(entry[q?.id]) : '');
+  }, [step, type, q?.id, entry]);
+
   const getVal = useCallback(() => {
     if (q.type === 'yn') return ynPick;
     if (q.type === 'sel') return selPick;
-    const el = document.getElementById('qinp');
-    return el ? el.value : null;
-  }, [q, ynPick, selPick]);
+    return currVal;
+  }, [q, ynPick, selPick, currVal]);
 
   function goNext() {
     const v = getVal();
     if (v === null || v === '' || v === undefined) { showToast('कृपया उत्तर द्या!', 'err'); return; }
     const newEntry = { ...entry, [q.id]: v };
     setEntry(newEntry);
-    setYnPick(null); setSelPick(null);
+    setYnPick(null); setSelPick(null); setCurrVal('');
     if (step < total - 1) setStep(s => s + 1);
     else setShowSummary(true);
   }
 
   function goBack() {
-    setYnPick(null); setSelPick(null);
+    setYnPick(null); setSelPick(null); setCurrVal('');
     if (step > 0) setStep(s => s - 1);
     else onBack();
   }
@@ -52,7 +57,7 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
       const v = val;
       const newEntry = { ...entry, [q.id]: v };
       setEntry(newEntry);
-      setYnPick(null); setSelPick(null);
+      setYnPick(null); setSelPick(null); setCurrVal('');
       const nextVis = QS.filter(qq => !qq.when || qq.when(newEntry));
       const nextStep = step + 1;
       if (nextStep < nextVis.length) setStep(nextStep);
@@ -104,6 +109,9 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
   const chipClass = type === 'cow' ? styles.chipCow : styles.chipCalf;
   const icon = type === 'cow' ? '🐄' : '🐮';
   const title = type === 'cow' ? 'गाय नोंद' : 'वासरे नोंद';
+  const canGoNext = q.type === 'sel'
+    ? (selPick || entry[q.id]) !== undefined
+    : (currVal !== undefined && String(currVal).trim() !== '');
 
   return (
     <div className={styles.page}>
@@ -123,7 +131,11 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
         <div className={styles.qCard}>
           <div className={styles.qNum}>{q.id.toUpperCase()}</div>
           <div className={styles.qText}>{q.q}</div>
-          <QuestionInput q={q} entry={entry} ynPick={ynPick} selPick={selPick} onYN={pickYN} onSel={setSelPick} prices={prices} type={type} step={step} />
+          <QuestionInput
+            q={q} entry={entry} ynPick={ynPick} selPick={selPick}
+            onYN={pickYN} onSel={setSelPick} prices={prices} type={type} step={step}
+            currVal={currVal} onValChange={setCurrVal} onEnter={goNext}
+          />
         </div>
       </div>
 
@@ -131,14 +143,19 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
       {q.type !== 'yn' && (
         <div className={styles.actionBar}>
           <button className={styles.backBtn} onClick={goBack} disabled={step===0}>←</button>
-          <button className={styles.nextBtn} onClick={goNext}>{isLast ? '✅ सारांश बघा' : 'पुढे →'}</button>
+          <button
+            className={`${styles.nextBtn} ${canGoNext ? styles.nextBtnReady : ''}`}
+            onClick={goNext}
+          >
+            {isLast ? '✅ सारांश बघा' : 'पुढे →'}
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, step }) {
+function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, step, currVal, onValChange, onEnter }) {
   const inpRef = useRef(null);
   const [calcHint, setCalcHint] = useState(() => {
     if (q.calc && entry[q.id] !== undefined) {
@@ -147,18 +164,11 @@ function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, s
     return '';
   });
 
-  useEffect(() => {
-    if (inpRef.current) {
-      inpRef.current.focus();
-      if (typeof inpRef.current.select === 'function') {
-        inpRef.current.select();
-      }
-    }
-  }, [type, step, q.id]);
-
   function handleInput(e) {
+    const v = e.target.value;
+    if (onValChange) onValChange(v);
     if (q.calc) {
-      try { setCalcHint(q.calc({ ...entry, [q.id]: parseFloat(e.target.value) }, fmt, prices)); } catch {}
+      try { setCalcHint(q.calc({ ...entry, [q.id]: parseFloat(v) }, fmt, prices)); } catch {}
     }
   }
 
@@ -185,6 +195,7 @@ function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, s
   }
 
   const isDec = q.type === 'dec';
+  const placeholder = q.pre === '₹' ? 'उदा. 50' : q.suf === 'L' ? 'उदा. 5.5' : 'उदा. 0';
 
   return (
     <div className={styles.inpWrap}>
@@ -198,13 +209,19 @@ function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, s
         pattern={isDec ? "[0-9]*[.,]?[0-9]*" : "[0-9]*"}
         step={isDec ? "0.5" : "1"}
         min="0"
-        defaultValue={entry[q.id] ?? ''}
-        placeholder="0"
+        value={currVal}
+        placeholder={placeholder}
         className={styles.inp}
         style={{ paddingLeft: q.pre ? 44 : 16, paddingRight: q.suf ? 64 : 16 }}
         onFocus={(e) => e.target.select()}
         onClick={(e) => e.target.select()}
-        onInput={handleInput}
+        onChange={handleInput}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (onEnter) onEnter();
+          }
+        }}
         autoComplete="off"
       />
       {q.suf && <span className={styles.suf}>{q.suf}</span>}

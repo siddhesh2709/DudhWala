@@ -46,6 +46,12 @@
   background: var(--white);
   box-shadow: 0 0 0 4px rgba(22,163,74,0.15), 0 4px 12px rgba(22,163,74,0.08);
 }
+.inp::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 26px;
+  opacity: 0.65;
+}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -100,14 +106,22 @@ input[type=number] {
 }
 .backBtn:hover { background: var(--border); }
 .backBtn:disabled { opacity: 0.3; cursor: default; }
+
 .nextBtn {
-  flex: 1; background: var(--green); color: #fff; border: none;
-  border-radius: var(--radius-sm); height: 48px; font-size: 15px;
+  flex: 1; background: var(--bg2); color: var(--text3); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); height: 48px; font-size: 15.5px;
   font-weight: 800; cursor: pointer; font-family: inherit;
-  box-shadow: 0 3px 12px rgba(22,163,74,0.28);
-  transition: all var(--trans);
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
 }
-.nextBtn:hover { background: #15803d; transform: translateY(-1px); }
+.nextBtnReady {
+  background: var(--green) !important; color: #fff !important; border: none !important;
+  box-shadow: 0 4px 16px rgba(22,163,74,0.35) !important;
+}
+.nextBtnReady:hover {
+  background: #15803d !important;
+  box-shadow: 0 6px 20px rgba(22,163,74,0.45) !important;
+  transform: translateY(-2px);
+}
 
 /* Summary */
 .sumHeader { display: flex; align-items: center; gap: 12px; padding: 14px 16px 0; }
