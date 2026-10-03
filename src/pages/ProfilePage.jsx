@@ -185,15 +185,54 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
     }
   }
 
+  function handleBannerUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const imgData = ev.target.result;
+      setProfile({ ...profile, bannerImg: imgData });
+      if (showToast) showToast('📸 बॅनर फोटो अपडेट झाला!', 'ok');
+    };
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div className={styles.page}>
       <TopBar icon="👤" farmName="प्रोफाइल" />
 
-      {/* Profile Hero */}
-      <div className={styles.hero}>
-        <div className={styles.avatar}>🐄</div>
-        <div className={styles.farmName}>{profile?.farmName || '--'}</div>
-        <div className={styles.ownerName}>👤 {profile?.ownerName || '--'}</div>
+      {/* Profile Hero Banner */}
+      <div
+        className={styles.hero}
+        style={
+          profile?.bannerImg
+            ? {
+                backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%), url(${profile.bannerImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }
+            : {}
+        }
+      >
+        {/* Camera Upload Button on Left */}
+        <div className={styles.heroLeft}>
+          <label htmlFor="banner-photo-input" className={styles.btnCamera}>
+            📸 {profile?.bannerImg ? 'फोटो बदला' : 'फोटो टाका'}
+          </label>
+          <input
+            type="file"
+            id="banner-photo-input"
+            accept="image/*"
+            onChange={handleBannerUpload}
+            style={{ display: 'none' }}
+          />
+        </div>
+
+        {/* Farm Name & Owner Name in Right Corner */}
+        <div className={styles.heroRight}>
+          <div className={styles.farmName}>{profile?.farmName || '--'}</div>
+          <div className={styles.ownerName}>👤 {profile?.ownerName || '--'}</div>
+        </div>
       </div>
 
       {/* Main Hishob Button Section */}
