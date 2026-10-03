@@ -9,24 +9,37 @@ import { fmt, fmtDate, p2, fmtMonth, MR_MONTHS } from '../store';
 export default function ProfilePage({ onSwitchTab, showToast }) {
   const { state, updatePrices, updateAnimals, setProfile, importData, resetData } = useApp();
   const { profile, records } = state;
-  const now = new Date();
   const [repMonth, setRepMonth] = useState(new Date());
+  
+  // History State handling
+  const [showHishob, setShowHishobState] = useState(false);
   const [detailDateKey, setDetailDateKeyState] = useState(null);
 
   useEffect(() => {
     const handlePopState = (e) => {
-      if (!e.state || !e.state.profDetailKey) {
-        setDetailDateKeyState(null);
-      } else if (e.state.profDetailKey) {
-        setDetailDateKeyState(e.state.profDetailKey);
-      }
+      const st = e.state || {};
+      setDetailDateKeyState(st.profDetailKey || null);
+      setShowHishobState(!!st.profHishob);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  const openHishob = () => {
+    window.history.pushState({ ...window.history.state, profHishob: true }, '');
+    setShowHishobState(true);
+  };
+
+  const closeHishob = () => {
+    if (window.history.state?.profHishob) {
+      window.history.back();
+    } else {
+      setShowHishobState(false);
+    }
+  };
+
   const openProfDetail = (d) => {
-    window.history.pushState({ ...window.history.state, profDetailKey: d }, '');
+    window.history.pushState({ ...window.history.state, profHishob: true, profDetailKey: d }, '');
     setDetailDateKeyState(d);
   };
 
@@ -52,6 +65,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
 
   const allDates = Object.keys(records).filter(d => records[d]?.cow?.saved || records[d]?.calf?.saved).sort().reverse();
 
+  // If a specific date detail is opened
   if (detailDateKey) {
     return (
       <RecordDetail
@@ -63,6 +77,58 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
     );
   }
 
+  // If Hishob history page is open
+  if (showHishob) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.hishobHeader}>
+          <button className={styles.backBtn} onClick={closeHishob}>← मागे</button>
+          <div className={styles.hishobHeaderTitle}>📖 मागील नोंदी (हिशोब)</div>
+          <span className={styles.countBadge}>{allDates.length} दिवस</span>
+        </div>
+
+        <div className={styles.section} style={{ paddingTop: 16 }}>
+          {allDates.length === 0 ? (
+            <div className={styles.emptyCard}>
+              <div className={styles.emptyIcon}>📭</div>
+              <p>अद्याप कोणत्याही तारखेचा हिशोब उपलब्ध नाही</p>
+            </div>
+          ) : (
+            <div className={styles.dateList}>
+              {allDates.map(d => {
+                const r = records[d];
+                const cowM = r.cow?.totalMilk || 0;
+                const inc  = r.cow?.milkIncome || 0;
+                const exp  = (r.cow?.totalExpense || 0) + (r.calf?.totalExpense || 0);
+                const net  = inc - exp;
+                return (
+                  <div key={d} className={styles.dateRow} onClick={() => openProfDetail(d)}>
+                    <div className={styles.dateLeft}>
+                      <div className={styles.dateTitle}>{fmtDate(d)}</div>
+                      <div className={styles.dateMini}>
+                        <span>🥛 {cowM.toFixed(1)}L</span>
+                        <span>💰 {fmt(inc)}</span>
+                        <span>💸 {fmt(exp)}</span>
+                      </div>
+                    </div>
+                    <div className={styles.dateRight}>
+                      <div className={`${styles.dateNet} ${net >= 0 ? styles.green : styles.red}`}>{fmt(net)}</div>
+                      <div className={styles.arr}>›</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <div style={{ height: 80 }} />
+        <BottomNav active="profile" onSwitch={onSwitchTab} />
+      </div>
+    );
+  }
+
+  // Calculation for Monthly Report
   const ms = `${repMonth.getFullYear()}-${p2(repMonth.getMonth()+1)}`;
   let mM=0, mI=0, mE=0, fE=0, dE=0, mdE=0, cfE=0, days=0;
   Object.entries(records).forEach(([d,r]) => {
@@ -78,7 +144,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
   function saveAnimals() {
     updateAnimals({ milking: Number(animalForm.milking)||0, nonMilk: Number(animalForm.nonMilk)||0, calves: Number(animalForm.calves)||0 });
     setShowAnimalModal(false);
-    showToast('✅ जतन झाले!','ok');
+    showToast('✅ जनावरांची संख्या जतन झाली!','ok');
   }
   function savePrices() {
     const updatedPrices = {
@@ -131,15 +197,31 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
         <div className={styles.ownerName}>👤 {profile?.ownerName || '--'}</div>
       </div>
 
-      {/* Animals bar */}
+      {/* Main Hishob Button Section */}
       <div className={styles.section}>
-        <div className={styles.secTitle}>जनावरे</div>
-        <div className={styles.animalsBar}>
-          <AnimalItem em="🐄" num={profile?.milking} lbl="Milking" />
-          <AnimalItem em="🐂" num={profile?.nonMilk} lbl="Non-Milk" />
-          <AnimalItem em="🐮" num={profile?.calves}  lbl="Calves" />
+        <div className={styles.secTitle}>दैनिक नोंद इतिहास</div>
+        <div className={styles.hishobCard} onClick={openHishob}>
+          <div className={styles.hishobIcon}>📖</div>
+          <div className={styles.hishobContent}>
+            <div className={styles.hishobTitle}>हिशोब (मागील नोंदी)</div>
+            <div className={styles.hishobSub}>सर्व दिवसांचा दूध, उत्पन्न व खर्चाचा हिशोब पहा</div>
+          </div>
+          <div className={styles.hishobBadge}>
+            <span>{allDates.length} नोंदी</span>
+            <span className={styles.hishobArr}>›</span>
+          </div>
         </div>
-        <ProfRow icon="✏️" label="जनावरांची संख्या बदला" right="→" onClick={() => { setAnimalForm({milking:profile?.milking||0,nonMilk:profile?.nonMilk||0,calves:profile?.calves||0}); setShowAnimalModal(true); }} />
+      </div>
+
+      {/* Animals summary */}
+      <div className={styles.section}>
+        <div className={styles.secTitle}>जनावरे माहिती</div>
+        <div className={styles.animalsBar}>
+          <AnimalItem em="🐄" num={profile?.milking} lbl="दूध देणाऱ्या" />
+          <AnimalItem em="🐂" num={profile?.nonMilk} lbl="न देणाऱ्या" />
+          <AnimalItem em="🐮" num={profile?.calves}  lbl="वासरे" />
+        </div>
+        <ProfRow icon="✏️" label="जनावरांची संख्या बदला" right="बदला →" onClick={() => { setAnimalForm({milking:profile?.milking||0,nonMilk:profile?.nonMilk||0,calves:profile?.calves||0}); setShowAnimalModal(true); }} />
       </div>
 
       {/* Monthly report */}
@@ -151,15 +233,15 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
           <button className={styles.mNav} onClick={() => setRepMonth(d => new Date(d.getFullYear(), d.getMonth()+1, 1))}>›</button>
         </div>
         {days === 0
-          ? <div className={styles.empty}><div className={styles.emptyIcon}>📊</div><p>या महिन्यासाठी डेटा नाही</p></div>
+          ? <div className={styles.empty}><div className={styles.emptyIcon}>📊</div><p>या महिन्यासाठी कोणतीही नोंद नाही</p></div>
           : <>
               <div className={styles.repBox}>
-                <div className={styles.repTitle}>📅 {days} दिवसांचा डेटा</div>
+                <div className={styles.repTitle}>📅 {days} दिवसांचा एकूण हिशोब</div>
                 <div className={styles.repGrid}>
                   <RepCard icon="🥛" lbl="दूध" val={mM.toFixed(1)+'L'} cls="blue" />
                   <RepCard icon="💰" lbl="उत्पन्न" val={fmt(mI)} cls="green" />
                   <RepCard icon="💸" lbl="खर्च" val={fmt(mE)} cls="red" />
-                  <RepCard icon="📈" lbl="निव्वळ" val={fmt(net)} cls={net>=0?'green':'red'} />
+                  <RepCard icon="📈" lbl="निव्वळ नफा" val={fmt(net)} cls={net>=0?'green':'red'} />
                 </div>
               </div>
               <div className={styles.repBox}>
@@ -179,46 +261,9 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
         }
       </div>
 
-      {/* Daily Records History Section */}
+      {/* Feed Prices Form */}
       <div className={styles.section}>
-        <div className={styles.secTitle}>📅 दैनिक नोंदींचा इतिहास</div>
-        {allDates.length === 0 ? (
-          <div className={styles.emptyCard}>
-            <div className={styles.emptyIcon}>📭</div>
-            <p>अद्याप कोणत्याही तारखेची नोंद नाही</p>
-          </div>
-        ) : (
-          <div className={styles.dateList}>
-            {allDates.map(d => {
-              const r = records[d];
-              const cowM = r.cow?.totalMilk || 0;
-              const inc  = r.cow?.milkIncome || 0;
-              const exp  = (r.cow?.totalExpense || 0) + (r.calf?.totalExpense || 0);
-              const net  = inc - exp;
-              return (
-                <div key={d} className={styles.dateRow} onClick={() => openProfDetail(d)}>
-                  <div className={styles.dateLeft}>
-                    <div className={styles.dateTitle}>{fmtDate(d)}</div>
-                    <div className={styles.dateMini}>
-                      <span>🥛 {cowM.toFixed(1)}L</span>
-                      <span>💰 {fmt(inc)}</span>
-                      <span>💸 {fmt(exp)}</span>
-                    </div>
-                  </div>
-                  <div className={styles.dateRight}>
-                    <div className={`${styles.dateNet} ${net >= 0 ? styles.green : styles.red}`}>{fmt(net)}</div>
-                    <div className={styles.arr}>›</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Feed Prices */}
-      <div className={styles.section}>
-        <div className={styles.secTitle}>खाद्य व चाऱ्याच्या किमती व माप</div>
+        <div className={styles.secTitle}>खाद्य व चाऱ्याचे दर आणि माप</div>
         <div className={styles.priceForm}>
           {[
             ['jaliRate','1 जाळी चाऱ्याचा दर (₹)'],
@@ -239,7 +284,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
         </div>
       </div>
 
-      {/* Data */}
+      {/* Data Management */}
       <div className={styles.section} style={{paddingBottom:100}}>
         <div className={styles.secTitle}>डेटा व्यवस्थापन</div>
         <ProfRow icon="📤" label="डेटा Export करा" right="JSON" onClick={exportData} />
@@ -275,7 +320,7 @@ function AnimalItem({ em, num, lbl }) {
     <div style={{flex:1,textAlign:'center',padding:'12px 8px'}}>
       <div style={{fontSize:20}}>{em}</div>
       <div style={{fontSize:20,fontWeight:900}}>{num ?? '-'}</div>
-      <div style={{fontSize:10,color:'var(--text3)',fontWeight:600}}>{lbl}</div>
+      <div style={{fontSize:11,color:'var(--text3)',fontWeight:600}}>{lbl}</div>
     </div>
   );
 }

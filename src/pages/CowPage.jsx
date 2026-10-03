@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
