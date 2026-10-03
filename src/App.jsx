@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import SetupPage from './pages/SetupPage';
 import CowPage from './pages/CowPage';
@@ -17,6 +17,28 @@ function Inner() {
   const [screen, setScreen] = useState('home');   // home | cowQ | calfQ
   const [toasts, setToasts] = useState([]);
 
+  // Initialize history state on mount
+  useEffect(() => {
+    if (!window.history.state) {
+      window.history.replaceState({ tab: 'cow', screen: 'home' }, '');
+    }
+  }, []);
+
+  // Listen for browser popstate (Back / Forward buttons)
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (e.state) {
+        if (e.state.tab) setTab(e.state.tab);
+        if (e.state.screen) setScreen(e.state.screen);
+      } else {
+        setTab('cow');
+        setScreen('home');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const showToast = useCallback((message, type = 'ok') => {
     const id = ++toastId;
     setToasts(t => [...t, { id, message, type }]);
@@ -24,6 +46,25 @@ function Inner() {
 
   const removeToast = useCallback((id) => {
     setToasts(t => t.filter(x => x.id !== id));
+  }, []);
+
+  const switchTab = useCallback((newTab) => {
+    setTab(newTab);
+    window.history.pushState({ tab: newTab, screen: 'home' }, '');
+  }, []);
+
+  const goEntry = useCallback((type) => {
+    const newScreen = type === 'cow' ? 'cowQ' : 'calfQ';
+    setScreen(newScreen);
+    window.history.pushState({ tab, screen: newScreen }, '');
+  }, [tab]);
+
+  const handleBackFromQuestionnaire = useCallback(() => {
+    if (window.history.state?.screen && window.history.state.screen !== 'home') {
+      window.history.back();
+    } else {
+      setScreen('home');
+    }
   }, []);
 
   // First-time setup
@@ -40,7 +81,7 @@ function Inner() {
   if (screen === 'cowQ') {
     return (
       <>
-        <QuestionnairePage type="cow" onBack={() => setScreen('home')} showToast={showToast} />
+        <QuestionnairePage type="cow" onBack={handleBackFromQuestionnaire} showToast={showToast} />
         <ToastContainer toasts={toasts} removeToast={removeToast} />
       </>
     );
@@ -48,15 +89,11 @@ function Inner() {
   if (screen === 'calfQ') {
     return (
       <>
-        <QuestionnairePage type="calf" onBack={() => setScreen('home')} showToast={showToast} />
+        <QuestionnairePage type="calf" onBack={handleBackFromQuestionnaire} showToast={showToast} />
         <ToastContainer toasts={toasts} removeToast={removeToast} />
       </>
     );
   }
-
-  // Main tabbed UI
-  const switchTab = (t) => setTab(t);
-  const goEntry = (type) => setScreen(type === 'cow' ? 'cowQ' : 'calfQ');
 
   return (
     <>

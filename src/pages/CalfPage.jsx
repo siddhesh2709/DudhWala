@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
@@ -15,7 +15,32 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
   const calf = rec?.calf || {};
   const now = new Date();
   const ms = `${now.getFullYear()}-${p2(now.getMonth()+1)}`;
-  const [detailKey, setDetailKey] = useState(null);
+  const [detailKey, setDetailKeyState] = useState(null);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (!e.state || !e.state.calfDetailKey) {
+        setDetailKeyState(null);
+      } else if (e.state.calfDetailKey) {
+        setDetailKeyState(e.state.calfDetailKey);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const openDetail = (d) => {
+    window.history.pushState({ ...window.history.state, calfDetailKey: d }, '');
+    setDetailKeyState(d);
+  };
+
+  const closeDetail = () => {
+    if (window.history.state?.calfDetailKey) {
+      window.history.back();
+    } else {
+      setDetailKeyState(null);
+    }
+  };
 
   let mE=0, mDr=0, mMed=0;
   Object.entries(records).forEach(([d,r]) => {
@@ -34,8 +59,8 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
         dateKey={detailKey}
         type="calf"
         record={records[detailKey]}
-        onBack={() => setDetailKey(null)}
-        onEdit={detailKey === dk ? () => { setDetailKey(null); onGoEntry('calf'); } : null}
+        onBack={closeDetail}
+        onEdit={detailKey === dk ? () => { closeDetail(); onGoEntry('calf'); } : null}
       />
     );
   }
@@ -109,7 +134,7 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
           : dates.map(d => {
               const f = records[d].calf;
               return (
-                <div className={styles.recItem} key={d} onClick={() => setDetailKey(d)}>
+                <div className={styles.recItem} key={d} onClick={() => openDetail(d)}>
                   <div>
                     <div className={styles.recDate}>{fmtDate(d)}</div>
                     <div className={styles.recMini}>

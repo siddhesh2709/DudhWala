@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
@@ -11,7 +11,33 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
   const { profile, records } = state;
   const now = new Date();
   const [repMonth, setRepMonth] = useState(new Date());
-  const [detailDateKey, setDetailDateKey] = useState(null);
+  const [detailDateKey, setDetailDateKeyState] = useState(null);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (!e.state || !e.state.profDetailKey) {
+        setDetailDateKeyState(null);
+      } else if (e.state.profDetailKey) {
+        setDetailDateKeyState(e.state.profDetailKey);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const openProfDetail = (d) => {
+    window.history.pushState({ ...window.history.state, profDetailKey: d }, '');
+    setDetailDateKeyState(d);
+  };
+
+  const closeProfDetail = () => {
+    if (window.history.state?.profDetailKey) {
+      window.history.back();
+    } else {
+      setDetailDateKeyState(null);
+    }
+  };
+
   const [showAnimalModal, setShowAnimalModal] = useState(false);
   const [animalForm, setAnimalForm] = useState({ milking: profile?.milking||0, nonMilk: profile?.nonMilk||0, calves: profile?.calves||0 });
   const [prices, setPrices] = useState({
@@ -32,7 +58,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
         dateKey={detailDateKey}
         type="all"
         record={records[detailDateKey]}
-        onBack={() => setDetailDateKey(null)}
+        onBack={closeProfDetail}
       />
     );
   }
@@ -170,7 +196,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
               const exp  = (r.cow?.totalExpense || 0) + (r.calf?.totalExpense || 0);
               const net  = inc - exp;
               return (
-                <div key={d} className={styles.dateRow} onClick={() => setDetailDateKey(d)}>
+                <div key={d} className={styles.dateRow} onClick={() => openProfDetail(d)}>
                   <div className={styles.dateLeft}>
                     <div className={styles.dateTitle}>{fmtDate(d)}</div>
                     <div className={styles.dateMini}>

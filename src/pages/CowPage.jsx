@@ -15,7 +15,32 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
   const cow = rec?.cow || {};
   const now = new Date();
   const ms = `${now.getFullYear()}-${p2(now.getMonth()+1)}`;
-  const [detailKey, setDetailKey] = useState(null);
+  const [detailKey, setDetailKeyState] = useState(null);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (!e.state || !e.state.cowDetailKey) {
+        setDetailKeyState(null);
+      } else if (e.state.cowDetailKey) {
+        setDetailKeyState(e.state.cowDetailKey);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const openDetail = (d) => {
+    window.history.pushState({ ...window.history.state, cowDetailKey: d }, '');
+    setDetailKeyState(d);
+  };
+
+  const closeDetail = () => {
+    if (window.history.state?.cowDetailKey) {
+      window.history.back();
+    } else {
+      setDetailKeyState(null);
+    }
+  };
 
   // Monthly totals
   let mM=0, mI=0, mE=0;
@@ -36,8 +61,8 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
         dateKey={detailKey}
         type="cow"
         record={records[detailKey]}
-        onBack={() => setDetailKey(null)}
-        onEdit={detailKey === dk ? () => { setDetailKey(null); onGoEntry('cow'); } : null}
+        onBack={closeDetail}
+        onEdit={detailKey === dk ? () => { closeDetail(); onGoEntry('cow'); } : null}
       />
     );
   }
@@ -108,7 +133,7 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
               const c = records[d].cow;
               const net = (c.milkIncome||0) - (c.totalExpense||0);
               return (
-                <div className={styles.recItem} key={d} onClick={() => setDetailKey(d)}>
+                <div className={styles.recItem} key={d} onClick={() => openDetail(d)}>
                   <div>
                     <div className={styles.recDate}>{fmtDate(d)}</div>
                     <div className={styles.recMini}>
