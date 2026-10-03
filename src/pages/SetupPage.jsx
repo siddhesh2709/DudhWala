@@ -89,8 +89,8 @@ export default function SetupPage({ onDone }) {
     <div className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.heroIcon}>🐄</div>
-        <h1 className={styles.heroTitle}>माझी डेअरी फार्म</h1>
-        <p className={styles.heroSub}>My Dairy Farm Manager</p>
+        <h1 className={styles.heroTitle}>दूधवाला — DudhWala</h1>
+        <p className={styles.heroSub}>DudhWala Dairy Farm Manager</p>
       </div>
 
       <div className={styles.card}>
