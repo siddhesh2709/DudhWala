@@ -1,51 +1,74 @@
-/* ═══════════════════════════════
-   GLOBAL CSS — माझी डेअरी फार्म
-   Clean, Simple, Professional
-═══════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════════
+   GLOBAL DESIGN SYSTEM — DudhWala Dairy Farm
+   Hand-crafted, modern, ultra-professional aesthetics
+   ════════════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --white:      #ffffff;
-  --bg:         #f7f8fc;
-  --bg2:        #f0f2f8;
-  --border:     #e4e9f2;
-  --border2:    #ccd3e0;
-  --text:       #111827;
-  --text2:      #4b5563;
-  --text3:      #9ca3af;
-  --green:      #16a34a;
-  --green-lt:   #f0fdf4;
-  --green-mid:  #22c55e;
-  --green-border:#bbf7d0;
-  --red:        #dc2626;
-  --red-lt:     #fff1f2;
-  --red-border: #fecaca;
-  --yellow:     #d97706;
-  --yellow-lt:  #fffbeb;
-  --blue:       #1d4ed8;
-  --blue-lt:    #eff6ff;
-  --blue-border:#bfdbfe;
-  --purple:     #7c3aed;
-  --purple-lt:  #faf5ff;
+  /* Colors */
+  --white:        #ffffff;
+  --bg:           #f8fafc;
+  --bg2:          #f1f5f9;
+  --border:       #e2e8f0;
+  --border2:      #cbd5e1;
+  --text:         #0f172a;
+  --text2:        #475569;
+  --text3:        #94a3b8;
+
+  /* Primary Emerald */
+  --green:        #059669;
+  --green-dark:   #047857;
+  --green-lt:     #ecfdf5;
+  --green-mid:    #10b981;
+  --green-border: #a7f3d0;
+
+  /* Red/Rose */
+  --red:          #e11d48;
+  --red-dark:     #be123c;
+  --red-lt:       #fff1f2;
+  --red-border:   #fecdd3;
+
+  /* Amber/Gold */
+  --yellow:       #d97706;
+  --yellow-lt:    #fffbeb;
+  --yellow-border:#fde68a;
+
+  /* Blue/Indigo */
+  --blue:         #2563eb;
+  --blue-lt:      #eff6ff;
+  --blue-border:  #bfdbfe;
+
+  /* Purple */
+  --purple:       #7c3aed;
+  --purple-lt:    #faf5ff;
   --purple-border:#ddd6fe;
-  --teal:       #0d9488;
-  --teal-lt:    #f0fdfa;
-  --radius-xl:  20px;
-  --radius:     14px;
-  --radius-sm:  10px;
-  --radius-xs:  7px;
-  --shadow-sm:  0 1px 4px rgba(17,24,39,0.06);
-  --shadow:     0 2px 10px rgba(17,24,39,0.08);
-  --shadow-md:  0 4px 20px rgba(17,24,39,0.10);
-  --shadow-lg:  0 8px 36px rgba(17,24,39,0.13);
-  --trans:      0.2s ease;
-  /* max width for centering on large screens */
+
+  /* Teal */
+  --teal:         #0d9488;
+  --teal-lt:      #f0fdfa;
+
+  /* Radii */
+  --radius-xl:    24px;
+  --radius:       16px;
+  --radius-sm:    12px;
+  --radius-xs:    8px;
+
+  /* Shadows */
+  --shadow-sm:    0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.02);
+  --shadow:       0 4px 14px -2px rgba(15,23,42,0.06), 0 2px 4px -1px rgba(15,23,42,0.03);
+  --shadow-md:    0 8px 24px -4px rgba(15,23,42,0.08), 0 4px 8px -2px rgba(15,23,42,0.04);
+  --shadow-lg:    0 16px 36px -6px rgba(15,23,42,0.12), 0 8px 16px -4px rgba(15,23,42,0.06);
+
+  /* Animation transitions */
+  --trans:        0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Max Shell Width */
   --max-w: 480px;
 }
 
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  font-family: 'Outfit', 'Inter', 'Noto Sans Devanagari', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -53,30 +76,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Center the app on large screens like a phone frame */
+/* Center desktop shell container like a sleek mobile device frame */
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #e8ecf4;
+  background: #cbd5e1;
 }
 
-/* All pages get max-width centering */
 .app-shell {
   width: 100%;
   max-width: var(--max-w);
   min-height: 100vh;
   background: var(--bg);
   position: relative;
-  box-shadow: 0 0 60px rgba(17,24,39,0.12);
+  box-shadow: 0 0 70px rgba(15,23,42,0.16);
 }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-/* Clean input defaults & spin button reset */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -86,16 +107,16 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* Animations */
+/* Smooth Entrance Keyframes */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes float {
-  0%,100% { transform: translateY(0) rotate(-1deg); }
-  50%      { transform: translateY(-7px) rotate(1deg); }
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
 }

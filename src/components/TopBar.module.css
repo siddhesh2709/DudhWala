@@ -1,20 +1,22 @@
-/* TopBar — clean redesign with high visibility back button */
+/* TopBar — glassmorphic header */
 .bar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1.5px solid var(--border);
   padding: 0 16px;
-  height: 56px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky; top: 0; z-index: 60;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.04);
 }
 .left { display: flex; align-items: center; gap: 11px; }
 .back {
   background: var(--green-lt);
   border: 1.5px solid var(--green-border);
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--green);
   width: 38px;
   height: 38px;
@@ -26,18 +28,20 @@
   font-weight: 900;
   transition: all var(--trans);
   font-family: inherit;
-  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.12);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
 }
 .back:hover {
   background: var(--green);
   color: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
-.logo { display: flex; align-items: center; gap: 9px; }
+.logo { display: flex; align-items: center; gap: 10px; }
 .pill {
-  width: 34px; height: 34px; border-radius: 10px;
-  background: var(--green-lt); border: 1px solid var(--green-border);
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  width: 36px; height: 36px; border-radius: 12px;
+  background: var(--green-lt); border: 1.5px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.1);
 }
-.name { font-size: 16.5px; font-weight: 900; color: var(--text); letter-spacing: -0.2px; }
+.name { font-size: 17px; font-weight: 900; color: var(--text); letter-spacing: -0.3px; }
 .right { display: flex; align-items: center; }
