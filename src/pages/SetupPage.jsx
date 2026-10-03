@@ -80,8 +80,8 @@ export default function SetupPage({ onDone }) {
             {[['milking','दूध देणाऱ्या गायी — Milking'],['nonMilk','न देणाऱ्या गायी — Non-Milking'],['calves','वासरे — Calves']].map(([k,l]) => (
               <div className={styles.group} key={k}>
                 <label className={styles.label}>{l}</label>
-                <input className={`${styles.input} ${styles.numBig}`} type="number" inputMode="numeric"
-                  value={form[k]} onChange={e => set(k, e.target.value)} />
+                <input className={`${styles.input} ${styles.numBig}`} type="number" inputMode="numeric" pattern="[0-9]*"
+                  value={form[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
           </>
@@ -93,8 +93,8 @@ export default function SetupPage({ onDone }) {
             {[['pkargil','Kargil गोणी (₹)'],['ptrans','Transaction गोणी (₹)'],['pmaina','8 Maina Wali गोणी (₹)']].map(([k,l]) => (
               <div className={styles.group} key={k}>
                 <label className={styles.label}>{l}</label>
-                <input className={styles.input} type="number" inputMode="numeric"
-                  value={form[k]} onChange={e => set(k, e.target.value)} />
+                <input className={styles.input} type="number" inputMode="numeric" pattern="[0-9]*"
+                  value={form[k]} onFocus={e => e.target.select()} onClick={e => e.target.select()} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
           </>

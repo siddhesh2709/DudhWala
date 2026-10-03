@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import TopBar from '../components/TopBar';
 import styles from './QuestionnairePage.module.css';
@@ -119,12 +119,22 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
 }
 
 function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, step }) {
+  const inpRef = useRef(null);
   const [calcHint, setCalcHint] = useState(() => {
     if (q.calc && entry[q.id] !== undefined) {
       try { return q.calc(entry, fmt, prices); } catch { return ''; }
     }
     return '';
   });
+
+  useEffect(() => {
+    if (inpRef.current) {
+      inpRef.current.focus();
+      if (typeof inpRef.current.select === 'function') {
+        inpRef.current.select();
+      }
+    }
+  }, [type, step, q.id]);
 
   function handleInput(e) {
     if (q.calc) {
@@ -154,21 +164,28 @@ function QuestionInput({ q, entry, ynPick, selPick, onYN, onSel, prices, type, s
     );
   }
 
+  const isDec = q.type === 'dec';
+
   return (
     <div className={styles.inpWrap}>
       {q.pre && <span className={styles.pre}>{q.pre}</span>}
       <input
+        ref={inpRef}
         id="qinp"
         key={`${type}-${step}`}
         type="number"
-        inputMode="decimal"
-        step={q.type === 'dec' ? '0.5' : '1'}
+        inputMode={isDec ? "decimal" : "numeric"}
+        pattern={isDec ? "[0-9]*[.,]?[0-9]*" : "[0-9]*"}
+        step={isDec ? "0.5" : "1"}
         min="0"
         defaultValue={entry[q.id] ?? ''}
         placeholder="0"
         className={styles.inp}
-        style={{ paddingLeft: q.pre ? 38 : 14, paddingRight: q.suf ? 54 : 14 }}
+        style={{ paddingLeft: q.pre ? 44 : 16, paddingRight: q.suf ? 64 : 16 }}
+        onFocus={(e) => e.target.select()}
+        onClick={(e) => e.target.select()}
         onInput={handleInput}
+        autoComplete="off"
       />
       {q.suf && <span className={styles.suf}>{q.suf}</span>}
       {calcHint && <div className={styles.calcHint}>🧮 {calcHint}</div>}

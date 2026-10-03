@@ -72,25 +72,29 @@
 }
 .input {
   width: 100%;
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
+  background: var(--white);
+  border: 2px solid var(--border2);
   border-radius: var(--radius-sm);
-  padding: 13px 14px;
-  color: var(--text); font-size: 15px;
-  font-family: inherit; font-weight: 500;
+  padding: 13px 15px;
+  color: var(--text); font-size: 15.5px;
+  font-family: inherit; font-weight: 600;
   outline: none;
-  transition: border-color var(--trans), box-shadow var(--trans), background var(--trans);
+  box-shadow: 0 1px 3px rgba(17,24,39,0.02);
+  transition: all 0.2s ease;
 }
 .input:focus {
   border-color: var(--green);
   background: var(--white);
-  box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
+  box-shadow: 0 0 0 3.5px rgba(22,163,74,0.15);
+}
+.input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
 }
 .numBig {
-  text-align: center; font-size: 32px;
-  font-weight: 900; padding: 18px; letter-spacing: 2px;
+  text-align: center; font-size: 28px;
+  font-weight: 800; padding: 14px; letter-spacing: 1px;
 }
-input[type=number]::-webkit-inner-spin-button { -webkit-appearance: auto; }
 
 .actions { display: flex; gap: 9px; margin-top: 6px; }
 .btnBack {

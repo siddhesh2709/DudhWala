@@ -39,9 +39,10 @@
 .priceForm { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 10px; }
 .group { margin-bottom: 12px; }
 .fLabel { display: block; font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-.fInput { width: 100%; background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; color: var(--text); font-size: 15px; font-family: inherit; font-weight: 500; outline: none; transition: border-color var(--trans), box-shadow var(--trans), background var(--trans); }
-.fInput:focus { border-color: var(--green); background: var(--white); box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
-.numBig { text-align: center; font-size: 30px; font-weight: 900; padding: 16px; letter-spacing: 2px; }
+.fInput { width: 100%; background: var(--white); border: 2px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; color: var(--text); font-size: 15.5px; font-family: inherit; font-weight: 600; outline: none; box-shadow: 0 1px 3px rgba(17,24,39,0.02); transition: all 0.2s ease; }
+.fInput:focus { border-color: var(--green); background: var(--white); box-shadow: 0 0 0 3.5px rgba(22,163,74,0.15); }
+.fInput::placeholder { color: #94a3b8; font-weight: 500; }
+.numBig { text-align: center; font-size: 28px; font-weight: 800; padding: 14px; letter-spacing: 1px; }
 .btnGreen { width: 100%; background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); padding: 13px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 12px rgba(22,163,74,0.25); transition: all var(--trans); font-family: inherit; }
 .btnGreen:hover { background: #15803d; transform: translateY(-1px); }
 
