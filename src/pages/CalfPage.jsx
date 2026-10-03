@@ -75,18 +75,22 @@ export default function CalfPage({ onSwitchTab, onGoEntry }) {
       </div>
 
       <div className={styles.secHead}>आजचा सारांश</div>
-      <div className={styles.cardsWrap}>
-        <div className={styles.cardsGrid}>
-          <div className={styles.statCard}>
+      <div className={styles.cardsGrid}>
+        <div className={`${styles.statCard} ${styles.card_green}`}>
+          <div className={styles.scHeader}>
             <div className={`${styles.scIcon} ${styles.ic_green}`}>🐮</div>
-            <div className={styles.scLabel}>वासरांची संख्या</div>
-            <div className={`${styles.scValue} ${styles.v_green}`}>{profile?.calves || 0}</div>
+            <span className={`${styles.scBadge} ${styles.bdg_green}`}>संख्या</span>
           </div>
-          <div className={styles.statCard}>
+          <div className={styles.scLabel}>वासरांची संख्या</div>
+          <div className={`${styles.scValue} ${styles.v_green}`}>{profile?.calves || 0}</div>
+        </div>
+        <div className={`${styles.statCard} ${styles.card_red}`}>
+          <div className={styles.scHeader}>
             <div className={`${styles.scIcon} ${styles.ic_red}`}>💸</div>
-            <div className={styles.scLabel}>आजचा खर्च</div>
-            <div className={`${styles.scValue} ${styles.v_red}`}>{fmt(calf.totalExpense)}</div>
+            <span className={`${styles.scBadge} ${styles.bdg_red}`}>खर्च</span>
           </div>
+          <div className={styles.scLabel}>आजचा खर्च</div>
+          <div className={`${styles.scValue} ${styles.v_red}`}>{fmt(calf.totalExpense)}</div>
         </div>
       </div>
 

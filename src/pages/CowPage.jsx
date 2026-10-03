@@ -82,11 +82,11 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
       {/* Today stats */}
       <div className={styles.secHead}>आजचा सारांश</div>
         <div className={styles.cardsGrid}>
-          <StatCard icon="🥛" color="blue"   label="आजचे दूध"    value={fmtL(cow.totalMilk)} />
-          <StatCard icon="💰" color="green"  label="आजचे उत्पन्न" value={fmt(cow.milkIncome)} />
-          <StatCard icon="💸" color="red"    label="आजचा खर्च"   value={fmt(cow.totalExpense)} />
+          <StatCard icon="🥛" color="blue"   label="आजचे दूध"    value={fmtL(cow.totalMilk)} tag="लिटर" />
+          <StatCard icon="💰" color="green"  label="आजचे उत्पन्न" value={fmt(cow.milkIncome)} tag="उत्पन्न" />
+          <StatCard icon="💸" color="red"    label="आजचा खर्च"   value={fmt(cow.totalExpense)} tag="खर्च" />
           <StatCard icon="📈" color={((cow.milkIncome||0)-(cow.totalExpense||0))>=0?'green':'red'}
-            label="निव्वळ" value={fmt((cow.milkIncome||0)-(cow.totalExpense||0))} />
+            label="निव्वळ फायदा" value={fmt((cow.milkIncome||0)-(cow.totalExpense||0))} tag="नफा/तोटा" />
         </div>
 
       {/* Monthly summary */}
@@ -133,10 +133,13 @@ export default function CowPage({ onSwitchTab, onGoEntry }) {
   );
 }
 
-function StatCard({ icon, color, label, value }) {
+function StatCard({ icon, color, label, value, tag }) {
   return (
-    <div className={styles.statCard}>
-      <div className={`${styles.scIcon} ${styles['ic_'+color]}`}>{icon}</div>
+    <div className={`${styles.statCard} ${styles['card_'+color]}`}>
+      <div className={styles.scHeader}>
+        <div className={`${styles.scIcon} ${styles['ic_'+color]}`}>{icon}</div>
+        {tag && <span className={`${styles.scBadge} ${styles['bdg_'+color]}`}>{tag}</span>}
+      </div>
       <div className={styles.scLabel}>{label}</div>
       <div className={`${styles.scValue} ${styles['v_'+color]}`}>{value}</div>
     </div>

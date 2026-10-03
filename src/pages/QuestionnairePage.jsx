@@ -63,17 +63,21 @@ export default function QuestionnairePage({ type, onBack, showToast }) {
   function save() {
     if (type === 'cow') {
       const e = entry;
-      const tMilk = (parseFloat(e.milk_morn)||0) + (parseFloat(e.milk_eve)||0);
-      const mInc  = (parseFloat(e.milk_morn)||0)*(parseFloat(e.morn_rate)||0) + (parseFloat(e.milk_eve)||0)*(parseFloat(e.eve_rate)||0);
-      const drC   = e.dr_came === 'yes'    ? parseFloat(e.dr_cost)||0 : 0;
-      const gnC   = e.goni_bought === 'yes' ? (parseInt(e.goni_cnt)||0)*(prices[e.goni_type]||0) : 0;
-      const mdC   = e.med_bought === 'yes'  ? parseFloat(e.med_cost)||0 : 0;
-      saveCowEntry(dk, { ...e, totalMilk:tMilk, milkIncome:mInc, drCost:drC, goniCost:gnC, medCost:mdC, totalExpense:drC+gnC+mdC });
+      const tMilk  = (parseFloat(e.milk_morn)||0) + (parseFloat(e.milk_eve)||0);
+      const mInc   = (parseFloat(e.milk_morn)||0)*(parseFloat(e.morn_rate)||0) + (parseFloat(e.milk_eve)||0)*(parseFloat(e.eve_rate)||0);
+      const jaliC  = (parseFloat(e.jali)||0) * (parseFloat(e.jali_rate)||(prices.jaliRate||50));
+      const drC    = e.dr_came === 'yes'    ? parseFloat(e.dr_cost)||0 : 0;
+      const gnC    = e.goni_bought === 'yes' ? (parseInt(e.goni_cnt)||0)*(prices[e.goni_type]||0) : 0;
+      const mdC    = e.med_bought === 'yes'  ? parseFloat(e.med_cost)||0 : 0;
+      const tExp   = jaliC + drC + gnC + mdC;
+      saveCowEntry(dk, { ...e, totalMilk:tMilk, milkIncome:mInc, jaliCost:jaliC, drCost:drC, goniCost:gnC, medCost:mdC, totalExpense:tExp });
     } else {
       const e = entry;
-      const drC = e.dr_came === 'yes'   ? parseFloat(e.dr_cost)||0 : 0;
-      const mdC = e.med_bought === 'yes' ? parseFloat(e.med_cost)||0 : 0;
-      saveCalfEntry(dk, { ...e, drCost:drC, medCost:mdC, totalExpense:drC+mdC });
+      const jaliC  = (parseFloat(e.jali)||0) * (parseFloat(e.jali_rate)||(prices.jaliRate||50));
+      const drC    = e.dr_came === 'yes'   ? parseFloat(e.dr_cost)||0 : 0;
+      const mdC    = e.med_bought === 'yes' ? parseFloat(e.med_cost)||0 : 0;
+      const tExp   = jaliC + drC + mdC;
+      saveCalfEntry(dk, { ...e, jaliCost:jaliC, drCost:drC, medCost:mdC, totalExpense:tExp });
     }
     showToast(`✅ ${type === 'cow' ? 'गाय' : 'वासरे'} नोंद जतन झाली!`, 'ok');
     onBack();
@@ -198,27 +202,30 @@ function SummaryView({ type, entry: e, prices, onBack, onSave }) {
   let content;
 
   if (type === 'cow') {
-    const tMilk = (parseFloat(e.milk_morn)||0)+(parseFloat(e.milk_eve)||0);
-    const mInc  = (parseFloat(e.milk_morn)||0)*(parseFloat(e.morn_rate)||0)+(parseFloat(e.milk_eve)||0)*(parseFloat(e.eve_rate)||0);
-    const drC   = e.dr_came==='yes'    ? parseFloat(e.dr_cost)||0 : 0;
-    const gnC   = e.goni_bought==='yes' ? (parseInt(e.goni_cnt)||0)*(prices[e.goni_type]||0) : 0;
-    const mdC   = e.med_bought==='yes'  ? parseFloat(e.med_cost)||0 : 0;
-    const tExp  = drC+gnC+mdC; const net = mInc-tExp;
+    const tMilk  = (parseFloat(e.milk_morn)||0)+(parseFloat(e.milk_eve)||0);
+    const mInc   = (parseFloat(e.milk_morn)||0)*(parseFloat(e.morn_rate)||0)+(parseFloat(e.milk_eve)||0)*(parseFloat(e.eve_rate)||0);
+    const jaliC  = (parseFloat(e.jali)||0) * (parseFloat(e.jali_rate)||(prices.jaliRate||50));
+    const drC    = e.dr_came==='yes'    ? parseFloat(e.dr_cost)||0 : 0;
+    const gnC    = e.goni_bought==='yes' ? (parseInt(e.goni_cnt)||0)*(prices[e.goni_type]||0) : 0;
+    const mdC    = e.med_bought==='yes'  ? parseFloat(e.med_cost)||0 : 0;
+    const tExp   = jaliC+drC+gnC+mdC; const net = mInc-tExp;
     content = <>
-      <SumCard title="🥛 दूध">
+      <SumCard title="🥛 दूध उत्पन्न">
         <SumRow l="सकाळ" r={`${e.milk_morn||0}L × ₹${e.morn_rate||0} = ${fmt((e.milk_morn||0)*(e.morn_rate||0))}`} rc="blue" />
         <SumRow l="संध्याकाळ" r={`${e.milk_eve||0}L × ₹${e.eve_rate||0} = ${fmt((e.milk_eve||0)*(e.eve_rate||0))}`} rc="blue" />
         <SumRow l="एकूण दूध" r={`${tMilk.toFixed(1)} L`} bold rc="blue" />
       </SumCard>
       <SumCard title="🌾 चारा">
-        <SumRow l="जाळी" r={`${e.jali||0}×${e.jali_kg||0}KG=${((e.jali||0)*(e.jali_kg||0)).toFixed(1)}KG`} />
-        <SumRow l="कढई" r={`${e.kadhai||0}×${e.kadhai_kg||0}KG=${((e.kadhai||0)*(e.kadhai_kg||0)).toFixed(1)}KG`} />
+        <SumRow l="जाळी (वजन)" r={`${e.jali||0} जाळी × ${e.jali_kg||0}KG = ${((e.jali||0)*(e.jali_kg||0)).toFixed(1)} KG`} />
+        {jaliC > 0 && <SumRow l="जाळी खर्च" r={`${e.jali||0} जाळी × ₹${e.jali_rate||prices.jaliRate||50} = ${fmt(jaliC)}`} rc="red" />}
+        {e.kadhai > 0 && <SumRow l="कढई" r={`${e.kadhai||0}×${e.kadhai_kg||0}KG=${((e.kadhai||0)*(e.kadhai_kg||0)).toFixed(1)}KG`} />}
       </SumCard>
-      {(drC||gnC||mdC) && <SumCard title="💸 खर्च">
+      <SumCard title="💸 एकूण खर्च">
+        {jaliC > 0            && <SumRow l="🌾 चारा (जाळी)" r={fmt(jaliC)} rc="red" />}
         {e.dr_came==='yes'     && <SumRow l="🩺 डॉक्टर" r={fmt(drC)} rc="red" />}
         {e.goni_bought==='yes' && <SumRow l={`📦 ${gn[e.goni_type]||''} ×${e.goni_cnt}`} r={fmt(gnC)} rc="red" />}
         {e.med_bought==='yes'  && <SumRow l="💊 मेडिकल" r={fmt(mdC)} rc="red" />}
-      </SumCard>}
+      </SumCard>
       <div className={styles.sumTotals}>
         <TotRow l="💰 दूध उत्पन्न" r={fmt(mInc)} rc="green" />
         <TotRow l="💸 एकूण खर्च"  r={fmt(tExp)} rc="red" />
@@ -227,18 +234,21 @@ function SummaryView({ type, entry: e, prices, onBack, onSave }) {
     </>;
   } else {
     const tFeed = ((parseFloat(e.jali)||0)*(parseFloat(e.jali_kg)||0)).toFixed(1);
+    const jaliC = (parseFloat(e.jali)||0) * (parseFloat(e.jali_rate)||(prices.jaliRate||50));
     const drC   = e.dr_came==='yes'   ? parseFloat(e.dr_cost)||0 : 0;
     const mdC   = e.med_bought==='yes' ? parseFloat(e.med_cost)||0 : 0;
-    const tExp  = drC+mdC;
+    const tExp  = jaliC+drC+mdC;
     content = <>
       <SumCard title="🌾 चारा">
         <SumRow l="जाळी" r={`${e.jali||0}×${e.jali_kg||0}KG=${tFeed}KG`} />
+        {jaliC > 0 && <SumRow l="जाळी खर्च" r={fmt(jaliC)} rc="red" />}
         {e.milk_fed==='yes' && <SumRow l="🥛 दूध" r={`${e.calves_fed||0} वासरांना, ${e.milk_liters||0}L`} rc="blue" />}
       </SumCard>
-      {(drC||mdC) && <SumCard title="💸 खर्च">
+      <SumCard title="💸 एकूण खर्च">
+        {jaliC > 0            && <SumRow l="🌾 चारा (जाळी)" r={fmt(jaliC)} rc="red" />}
         {e.dr_came==='yes'   && <SumRow l="🩺 डॉक्टर" r={fmt(drC)} rc="red" />}
         {e.med_bought==='yes' && <SumRow l="💊 मेडिकल" r={fmt(mdC)} rc="red" />}
-      </SumCard>}
+      </SumCard>
       <div className={styles.sumTotals}>
         <TotRow l="💸 एकूण खर्च" r={fmt(tExp)} rc="red" big />
       </div>

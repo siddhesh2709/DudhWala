@@ -2,17 +2,32 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import TopBar from '../components/TopBar';
 import BottomNav from '../components/BottomNav';
+import RecordDetail from '../components/RecordDetail';
 import styles from './ProfilePage.module.css';
-import { fmt, p2, fmtMonth, MR_MONTHS } from '../store';
+import { fmt, fmtDate, p2, fmtMonth, MR_MONTHS } from '../store';
 
 export default function ProfilePage({ onSwitchTab, showToast }) {
   const { state, updatePrices, updateAnimals, importData, resetData } = useApp();
   const { profile, records } = state;
   const now = new Date();
   const [repMonth, setRepMonth] = useState(new Date());
+  const [detailDateKey, setDetailDateKey] = useState(null);
   const [showAnimalModal, setShowAnimalModal] = useState(false);
   const [animalForm, setAnimalForm] = useState({ milking: profile?.milking||0, nonMilk: profile?.nonMilk||0, calves: profile?.calves||0 });
-  const [prices, setPrices] = useState({ kargil: profile?.prices?.kargil||1250, trans: profile?.prices?.trans||1100, maina8: profile?.prices?.maina8||950 });
+  const [prices, setPrices] = useState({ jaliRate: profile?.prices?.jaliRate||50, kargil: profile?.prices?.kargil||1250, trans: profile?.prices?.trans||1100, maina8: profile?.prices?.maina8||950 });
+
+  const allDates = Object.keys(records).filter(d => records[d]?.cow?.saved || records[d]?.calf?.saved).sort().reverse();
+
+  if (detailDateKey) {
+    return (
+      <RecordDetail
+        dateKey={detailDateKey}
+        type="all"
+        record={records[detailDateKey]}
+        onBack={() => setDetailDateKey(null)}
+      />
+    );
+  }
 
   const ms = `${repMonth.getFullYear()}-${p2(repMonth.getMonth()+1)}`;
   let mM=0, mI=0, mE=0, fE=0, dE=0, mdE=0, cfE=0, days=0;
@@ -114,11 +129,48 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
         }
       </div>
 
+      {/* Daily Records History Section */}
+      <div className={styles.section}>
+        <div className={styles.secTitle}>📅 दैनिक नोंदींचा इतिहास</div>
+        {allDates.length === 0 ? (
+          <div className={styles.emptyCard}>
+            <div className={styles.emptyIcon}>📭</div>
+            <p>अद्याप कोणत्याही तारखेची नोंद नाही</p>
+          </div>
+        ) : (
+          <div className={styles.dateList}>
+            {allDates.map(d => {
+              const r = records[d];
+              const cowM = r.cow?.totalMilk || 0;
+              const inc  = r.cow?.milkIncome || 0;
+              const exp  = (r.cow?.totalExpense || 0) + (r.calf?.totalExpense || 0);
+              const net  = inc - exp;
+              return (
+                <div key={d} className={styles.dateRow} onClick={() => setDetailDateKey(d)}>
+                  <div className={styles.dateLeft}>
+                    <div className={styles.dateTitle}>{fmtDate(d)}</div>
+                    <div className={styles.dateMini}>
+                      <span>🥛 {cowM.toFixed(1)}L</span>
+                      <span>💰 {fmt(inc)}</span>
+                      <span>💸 {fmt(exp)}</span>
+                    </div>
+                  </div>
+                  <div className={styles.dateRight}>
+                    <div className={`${styles.dateNet} ${net >= 0 ? styles.green : styles.red}`}>{fmt(net)}</div>
+                    <div className={styles.arr}>›</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {/* Feed Prices */}
       <div className={styles.section}>
-        <div className={styles.secTitle}>खाद्य किमती</div>
+        <div className={styles.secTitle}>खाद्य व चाऱ्याच्या किमती</div>
         <div className={styles.priceForm}>
-          {[['kargil','Kargil गोणी (₹)'],['trans','Transaction गोणी (₹)'],['maina8','8 Maina Wali गोणी (₹)']].map(([k,l]) => (
+          {[['jaliRate','1 जाळी चाऱ्याचा दर (₹)'],['kargil','Kargil गोणी (₹)'],['trans','Transaction गोणी (₹)'],['maina8','8 Maina Wali गोणी (₹)']].map(([k,l]) => (
             <div className={styles.group} key={k}>
               <label className={styles.fLabel}>{l}</label>
               <input className={styles.fInput} type="number" inputMode="numeric" pattern="[0-9]*"
@@ -131,7 +183,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
 
       {/* Data */}
       <div className={styles.section} style={{paddingBottom:100}}>
-        <div className={styles.secTitle}>डेटा</div>
+        <div className={styles.secTitle}>डेटा व्यवस्थापन</div>
         <ProfRow icon="📤" label="डेटा Export करा" right="JSON" onClick={exportData} />
         <ProfRow icon="📥" label="डेटा Import करा" right="JSON" onClick={() => document.getElementById('imp-file').click()} />
         <input type="file" id="imp-file" accept=".json" style={{display:'none'}} onChange={handleImport} />

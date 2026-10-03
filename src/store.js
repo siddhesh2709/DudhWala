@@ -44,12 +44,12 @@ export function fmtMonth(d) {
 }
 
 export function fmt(n) {
-  if (n === undefined || n === null || isNaN(n)) return '₹--';
+  if (n === undefined || n === null || isNaN(n)) return '₹0';
   return '₹' + Number(n).toLocaleString('en-IN');
 }
 
 export function fmtL(n) {
-  if (n === undefined || n === null || isNaN(n)) return '-- L';
+  if (n === undefined || n === null || isNaN(n)) return '0.0 L';
   return Number(n).toFixed(1) + ' L';
 }
 

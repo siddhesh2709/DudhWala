@@ -14,13 +14,34 @@
 
 .secHead { font-size: 11px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; padding: 4px 18px 8px; }
 
-.cardsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 14px 14px; }
-.statCard { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 12px; box-shadow: var(--shadow-sm); transition: box-shadow var(--trans); }
-.scIcon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 9px; }
-.scLabel { font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
-.scValue { font-size: 19px; font-weight: 800; }
-.ic_green  { background: var(--green-lt); } .ic_red { background: var(--red-lt); } .ic_purple { background: var(--purple-lt); }
-.v_green   { color: var(--green); } .v_red { color: var(--red); } .v_blue { color: var(--blue); } .v_purple { color: var(--purple); }
+.cardsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 16px; }
+.statCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 15px 14px;
+  box-shadow: 0 2px 10px rgba(17,24,39,0.04);
+  border: 1px solid var(--border);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.statCard:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(17,24,39,0.08); }
+.card_green { background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%); border-color: #bbf7d0; }
+.card_red   { background: linear-gradient(145deg, #ffffff 0%, #fff1f2 100%); border-color: #fecaca; }
+
+.scHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.scIcon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.8); }
+.ic_green { background: #dcfce7; color: #166534; }
+.ic_red   { background: #ffe4e6; color: #9f1239; }
+.ic_purple { background: #f3e8ff; color: #6b21a8; }
+
+.scBadge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; letter-spacing: 0.2px; }
+.bdg_green { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.bdg_red   { background: #fff1f2; color: #dc2626; border: 1px solid #fecaca; }
+
+.scLabel { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
+.scValue { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; }
+.v_green { color: #15803d; } .v_red { color: #b91c1c; } .v_blue { color: #1d4ed8; } .v_purple { color: #7c3aed; }
 
 .entryCard { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 15px 16px; margin: 0 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: var(--shadow-sm); transition: all var(--trans); }
 .entryCard:hover { border-color: var(--purple-border); box-shadow: var(--shadow); }

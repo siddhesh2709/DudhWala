@@ -50,6 +50,27 @@
 .empty { text-align: center; padding: 32px 20px; }
 .emptyIcon { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
 .empty p { color: var(--text3); font-size: 14px; font-weight: 500; }
+.emptyCard { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; color: var(--text3); font-size: 13.5px; font-weight: 600; }
+
+/* Daily Records List */
+.dateList { display: flex; flex-direction: column; gap: 8px; }
+.dateRow {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 13px 15px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: all var(--trans);
+}
+.dateRow:hover { border-color: var(--green); box-shadow: var(--shadow); transform: translateY(-1px); }
+.dateLeft { display: flex; flex-direction: column; gap: 4px; }
+.dateTitle { font-weight: 800; font-size: 14px; color: var(--text); }
+.dateMini { display: flex; gap: 6px; flex-wrap: wrap; }
+.dateMini span { font-size: 11px; color: var(--text2); font-weight: 600; background: var(--bg2); padding: 2px 7px; border-radius: 99px; border: 1px solid var(--border); }
+.dateRight { display: flex; align-items: center; gap: 8px; }
+.dateNet { font-size: 14.5px; font-weight: 800; }
+.green { color: var(--green); }
+.red   { color: var(--red); }
+.arr { color: var(--text3); font-size: 18px; font-weight: 700; }
 
 /* Modal */
 .overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.45); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s ease; }
