@@ -1,0 +1,91 @@
+/* ═══════════════════════════════
+   GLOBAL CSS — माझी डेअरी फार्म
+   Clean, Simple, Professional
+═══════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:      #ffffff;
+  --bg:         #f7f8fc;
+  --bg2:        #f0f2f8;
+  --border:     #e4e9f2;
+  --border2:    #ccd3e0;
+  --text:       #111827;
+  --text2:      #4b5563;
+  --text3:      #9ca3af;
+  --green:      #16a34a;
+  --green-lt:   #f0fdf4;
+  --green-mid:  #22c55e;
+  --green-border:#bbf7d0;
+  --red:        #dc2626;
+  --red-lt:     #fff1f2;
+  --red-border: #fecaca;
+  --yellow:     #d97706;
+  --yellow-lt:  #fffbeb;
+  --blue:       #1d4ed8;
+  --blue-lt:    #eff6ff;
+  --blue-border:#bfdbfe;
+  --purple:     #7c3aed;
+  --purple-lt:  #faf5ff;
+  --purple-border:#ddd6fe;
+  --teal:       #0d9488;
+  --teal-lt:    #f0fdfa;
+  --radius-xl:  20px;
+  --radius:     14px;
+  --radius-sm:  10px;
+  --radius-xs:  7px;
+  --shadow-sm:  0 1px 4px rgba(17,24,39,0.06);
+  --shadow:     0 2px 10px rgba(17,24,39,0.08);
+  --shadow-md:  0 4px 20px rgba(17,24,39,0.10);
+  --shadow-lg:  0 8px 36px rgba(17,24,39,0.13);
+  --trans:      0.2s ease;
+  /* max width for centering on large screens */
+  --max-w: 480px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Center the app on large screens like a phone frame */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #e8ecf4;
+}
+
+/* All pages get max-width centering */
+.app-shell {
+  width: 100%;
+  max-width: var(--max-w);
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+  box-shadow: 0 0 60px rgba(17,24,39,0.12);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-7px) rotate(1deg); }
+}

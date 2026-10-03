@@ -1,0 +1,46 @@
+/* BottomNav */
+.nav {
+  position: fixed;
+  bottom: 0;
+  /* Position inside the app-shell */
+  width: 100%;
+  max-width: 480px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  box-shadow: 0 -2px 14px rgba(17,24,39,0.07);
+}
+
+.btn {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 10px 4px 12px;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--text3);
+  border: none; background: transparent;
+  font-family: inherit;
+  transition: color var(--trans);
+  position: relative;
+}
+.icon { font-size: 22px; transition: transform var(--trans); line-height: 1; }
+.label { font-size: 11px; font-weight: 700; letter-spacing: 0.1px; }
+
+.active { color: var(--green); }
+.active .icon { transform: scale(1.13); }
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 25%; right: 25%;
+  height: 2.5px;
+  background: var(--green);
+  border-radius: 0 0 99px 99px;
+  opacity: 0;
+  transition: opacity var(--trans);
+}
+.active::before { opacity: 1; }

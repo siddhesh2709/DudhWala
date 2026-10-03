@@ -1,0 +1,29 @@
+/* TopBar */
+.bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 60;
+}
+.left { display: flex; align-items: center; gap: 10px; }
+.back {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 9px; color: var(--text2);
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px;
+  transition: all var(--trans); font-family: inherit;
+}
+.back:hover { background: var(--border); }
+.logo { display: flex; align-items: center; gap: 9px; }
+.pill {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--green-lt); border: 1px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.name { font-size: 16px; font-weight: 800; color: var(--text); }
+.right { display: flex; align-items: center; }

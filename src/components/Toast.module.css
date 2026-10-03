@@ -1,0 +1,30 @@
+.wrap {
+  position: fixed;
+  top: 66px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  animation: tIn 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes tIn {
+  from { opacity: 0; transform: translateY(-9px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ok  { border-color: var(--green); color: var(--green); }
+.err { border-color: var(--red);   color: var(--red); }

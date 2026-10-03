@@ -1,0 +1,58 @@
+/* ProfilePage — clean redesign */
+.page { background: var(--bg); min-height: 100vh; overflow-y: auto; }
+
+/* Hero */
+.hero { background: var(--green); padding: 22px 18px 26px; text-align: center; position: relative; overflow: hidden; }
+.hero::after { content: '🌿'; position: absolute; right: 14px; top: 8px; font-size: 60px; opacity: 0.15; pointer-events: none; }
+.avatar { width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 10px; }
+.farmName  { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 2px; }
+.ownerName { color: rgba(255,255,255,0.72); font-size: 13px; font-weight: 500; }
+
+/* Sections */
+.section { padding: 16px 14px 0; }
+.secTitle { font-size: 11px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 9px; }
+
+/* Animals */
+.animalsBar { display: flex; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 9px; }
+.animalsBar > div + div { border-left: 1px solid var(--border); }
+
+/* Profile rows */
+.profRow { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all var(--trans); box-shadow: var(--shadow-sm); }
+.profRow:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.prL { display: flex; align-items: center; gap: 11px; }
+.prIcon { width: 34px; height: 34px; border-radius: 9px; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.prLbl { font-size: 14px; font-weight: 600; color: var(--text); }
+.prR { color: var(--text3); font-size: 13px; font-weight: 600; }
+
+/* Month picker */
+.monthPick { display: flex; align-items: center; justify-content: space-between; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 14px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+.mNav { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-family: inherit; transition: all var(--trans); }
+.mNav:hover { background: var(--border); }
+.mLbl { font-weight: 800; font-size: 14.5px; }
+
+/* Report */
+.repBox { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+.repTitle { font-size: 11px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 13px; }
+.repGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* Price form */
+.priceForm { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 10px; }
+.group { margin-bottom: 12px; }
+.fLabel { display: block; font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+.fInput { width: 100%; background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; color: var(--text); font-size: 15px; font-family: inherit; font-weight: 500; outline: none; transition: border-color var(--trans), box-shadow var(--trans), background var(--trans); }
+.fInput:focus { border-color: var(--green); background: var(--white); box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+.numBig { text-align: center; font-size: 30px; font-weight: 900; padding: 16px; letter-spacing: 2px; }
+.btnGreen { width: 100%; background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); padding: 13px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 12px rgba(22,163,74,0.25); transition: all var(--trans); font-family: inherit; }
+.btnGreen:hover { background: #15803d; transform: translateY(-1px); }
+
+/* Empty */
+.empty { text-align: center; padding: 32px 20px; }
+.emptyIcon { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
+.empty p { color: var(--text3); font-size: 14px; font-weight: 500; }
+
+/* Modal */
+.overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.45); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s ease; }
+.modal { background: var(--white); border-radius: 20px 20px 0 0; padding: 24px 20px 32px; width: 100%; max-width: 480px; animation: slideUp 0.28s cubic-bezier(0.4,0,0.2,1); border: 1px solid var(--border); border-bottom: none; }
+@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modalTitle { font-size: 16px; font-weight: 800; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+.modalClose { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text2); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; font-family: inherit; }
