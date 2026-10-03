@@ -20,7 +20,6 @@
   font-size: 40px;
   margin: 0 auto 14px;
   box-shadow: 0 4px 20px rgba(22,163,74,0.15);
-  animation: float 3.5s ease-in-out infinite;
 }
 
 .heroTitle {
@@ -32,10 +31,11 @@
 
 .card {
   background: var(--white);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 24px 20px;
   width: 100%;
+  max-width: 440px;
   box-shadow: var(--shadow-md);
 }
 
@@ -60,9 +60,31 @@
 }
 .stepHead {
   font-size: 18px; font-weight: 800;
-  color: var(--text); margin-bottom: 20px;
+  color: var(--text); margin-bottom: 16px;
 }
 .hint { font-size: 13px; color: var(--text2); margin-bottom: 14px; }
+
+.syncHint {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin-bottom: 18px;
+}
+
+.errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
 
 .group { margin-bottom: 14px; }
 .label {
@@ -94,6 +116,53 @@
 .numBig {
   text-align: center; font-size: 28px;
   font-weight: 800; padding: 14px; letter-spacing: 1px;
+}
+
+.loginBtnGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnLoginSync {
+  width: 100%;
+  background: var(--green);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+  transition: all var(--trans);
+}
+.btnLoginSync:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+.btnLoginSync:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btnCreateNew {
+  width: 100%;
+  background: var(--bg2);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--trans);
+}
+.btnCreateNew:hover {
+  background: var(--border);
 }
 
 .actions { display: flex; gap: 9px; margin-top: 6px; }

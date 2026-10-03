@@ -3,34 +3,72 @@ import { useApp } from '../context/AppContext';
 import styles from './SetupPage.module.css';
 
 const STEPS = [
-  { tag: 'Step 1 of 3', heading: '🏡 फार्म माहिती' },
+  { tag: 'Step 1 of 3', heading: '🏡 फार्म माहिती व पासवर्ड' },
   { tag: 'Step 2 of 3', heading: '🐄 जनावरांची संख्या' },
   { tag: 'Step 3 of 3', heading: '⚙️ खाद्य किमती' },
 ];
 
 export default function SetupPage({ onDone }) {
-  const { setProfile } = useApp();
+  const { setProfile, loginOrSyncAccount } = useApp();
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [form, setForm] = useState({
-    farmName: '', ownerName: '',
+    farmName: '', ownerName: '', password: '',
     milking: 0, nonMilk: 0, calves: 0,
     jali_kg: 15, jaliRate: 50,
     kadhai_kg: 2, khadya_rate: 24,
     pkargil: 1250, ptrans: 1100, pmaina: 950,
   });
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const set = (k, v) => {
+    setErrorMsg('');
+    setForm(f => ({ ...f, [k]: v }));
+  };
+
+  const handleLoginSync = async () => {
+    if (!form.farmName.trim() || !form.ownerName.trim() || !form.password.trim()) {
+      setErrorMsg('कृपया फार्मचे नाव, मालकाचे नाव व पासवर्ड भरा.');
+      return;
+    }
+    setLoading(true);
+    setErrorMsg('');
+    const res = await loginOrSyncAccount(
+      form.farmName.trim(),
+      form.ownerName.trim(),
+      form.password.trim()
+    );
+    setLoading(false);
+
+    if (res.success && !res.isNew) {
+      onDone();
+    } else if (res.success && res.isNew) {
+      // Proceed to step 2 to finish creating new account
+      setStep(1);
+    } else {
+      setErrorMsg(res.message || 'काहीतरी त्रुटी झाली.');
+    }
+  };
 
   const next = () => {
-    if (step === 0 && (!form.farmName.trim() || !form.ownerName.trim())) return;
-    if (step < 2) setStep(s => s + 1);
-    else finish();
+    if (step === 0) {
+      if (!form.farmName.trim() || !form.ownerName.trim() || !form.password.trim()) {
+        setErrorMsg('कृपया फार्मचे नाव, मालकाचे नाव व पासवर्ड भरा.');
+        return;
+      }
+      setStep(1);
+    } else if (step < 2) {
+      setStep(s => s + 1);
+    } else {
+      finish();
+    }
   };
 
   const finish = () => {
     setProfile({
       farmName: form.farmName.trim(),
       ownerName: form.ownerName.trim(),
+      password: form.password.trim(),
       milking: Number(form.milking) || 0,
       nonMilk: Number(form.nonMilk) || 0,
       calves:  Number(form.calves)  || 0,
@@ -66,17 +104,47 @@ export default function SetupPage({ onDone }) {
         <div className={styles.stepTag}>{STEPS[step].tag}</div>
         <h2 className={styles.stepHead}>{STEPS[step].heading}</h2>
 
+        {errorMsg && <div className={styles.errorBanner}>⚠️ {errorMsg}</div>}
+
         {step === 0 && (
           <>
+            <div className={styles.syncHint}>
+              💡 <b>डिव्हाइस सिंक टीप:</b> हे ३ नाव व पासवर्ड दुसऱ्या कोणत्याही मोबाईलवर टाकल्यास तुमचे संपूर्ण प्रोफाइल व डेटा आपोआप उघडेल.
+            </div>
+
             <div className={styles.group}>
               <label className={styles.label}>फार्मचे नाव — Farm Name</label>
               <input className={styles.input} placeholder="उदा. श्री गणेश डेअरी"
                 value={form.farmName} onChange={e => set('farmName', e.target.value)} />
             </div>
+
             <div className={styles.group}>
               <label className={styles.label}>मालकाचे नाव — Owner Name</label>
               <input className={styles.input} placeholder="उदा. रामराव पाटील"
                 value={form.ownerName} onChange={e => set('ownerName', e.target.value)} />
+            </div>
+
+            <div className={styles.group}>
+              <label className={styles.label}>पासवर्ड / पिन — Password</label>
+              <input className={styles.input} type="password" placeholder="उदा. 1234"
+                value={form.password} onChange={e => set('password', e.target.value)} />
+            </div>
+
+            <div className={styles.loginBtnGroup}>
+              <button
+                className={styles.btnLoginSync}
+                onClick={handleLoginSync}
+                disabled={loading}
+              >
+                {loading ? '⏳ शोधत आहे...' : '🔓 प्रोफाइल उघडा (Login & Sync)'}
+              </button>
+              
+              <button
+                className={styles.btnCreateNew}
+                onClick={next}
+              >
+                ✨ नवीन फार्म बनवा →
+              </button>
             </div>
           </>
         )}
@@ -90,6 +158,11 @@ export default function SetupPage({ onDone }) {
                   value={form[k]} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
+
+            <div className={styles.actions}>
+              <button className={styles.btnBack} onClick={() => setStep(0)}>← मागे</button>
+              <button className={styles.btnNext} onClick={next}>पुढे →</button>
+            </div>
           </>
         )}
 
@@ -111,17 +184,13 @@ export default function SetupPage({ onDone }) {
                   value={form[k]} onChange={e => set(k, e.target.value)} />
               </div>
             ))}
+
+            <div className={styles.actions}>
+              <button className={styles.btnBack} onClick={() => setStep(1)}>← मागे</button>
+              <button className={styles.btnNext} onClick={finish}>🌾 फार्म तयार करा!</button>
+            </div>
           </>
         )}
-
-        <div className={styles.actions}>
-          {step > 0 && (
-            <button className={styles.btnBack} onClick={() => setStep(s => s - 1)}>← मागे</button>
-          )}
-          <button className={styles.btnNext} onClick={next}>
-            {step === 2 ? '🌾 फार्म तयार करा!' : 'पुढे →'}
-          </button>
-        </div>
       </div>
     </div>
   );

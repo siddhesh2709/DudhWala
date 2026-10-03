@@ -286,7 +286,24 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
 
       {/* Data Management */}
       <div className={styles.section} style={{paddingBottom:100}}>
-        <div className={styles.secTitle}>डेटा व्यवस्थापन</div>
+        <div className={styles.secTitle}>डेटा व डिव्हाइस सिंक</div>
+        
+        <div className={styles.syncCard}>
+          <div className={styles.syncCardHeader}>
+            <span>☁️ ऑनलाईन डिव्हाइस सिंक चालू आहे</span>
+            <span className={styles.syncDot}>●</span>
+          </div>
+          <div className={styles.syncCardBody}>
+            <div><b>फार्मचे नाव:</b> {profile?.farmName || '--'}</div>
+            <div><b>मालकाचे नाव:</b> {profile?.ownerName || '--'}</div>
+            <div><b>पासवर्ड:</b> {profile?.password ? '••••••' : 'नाही'}</div>
+          </div>
+          <p className={styles.syncHintText}>
+            💡 कोणत्याही दुसऱ्या मोबाईलवर हेच ३ नाव व पासवर्ड टाकल्यास तुमची सर्व माहिती आपोआप उघडेल.
+          </p>
+        </div>
+
+        <ProfRow icon="🔄" label="दुसरा फार्म / खाते लॉगइन करा" right="→" onClick={() => { if (confirm('दुसऱ्या डिव्हाइस/फार्म खात्यावर लॉगइन करायचे का?')) { resetData(); window.location.reload(); } }} />
         <ProfRow icon="📤" label="डेटा Export करा" right="JSON" onClick={exportData} />
         <ProfRow icon="📥" label="डेटा Import करा" right="JSON" onClick={() => document.getElementById('imp-file').click()} />
         <input type="file" id="imp-file" accept=".json" style={{display:'none'}} onChange={handleImport} />
