@@ -14,6 +14,12 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
   const [showHishob, setShowHishobState] = useState(false);
   const [detailDateKey, setDetailDateKeyState] = useState(null);
 
+  // 2-Step Verification Modal State for Reset Data
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1);
+  const [deletePass, setDeletePass] = useState('');
+  const [deleteErr, setDeleteErr] = useState('');
+
   useEffect(() => {
     const handlePopState = (e) => {
       const st = e.state || {};
@@ -160,26 +166,22 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
     }
   }
 
-  function doReset() {
-    // 1st Confirmation
-    if (!confirm('⚠️ (1/2) तुम्हाला खरंच सर्व डेटा मिटवायचा आहे का?')) return;
-    
-    // 2nd Confirmation
-    if (!confirm('⚠️ (2/2) खात्री आहे? हा डेटा कायमचा नष्ट होईल व पूर्ववत येणार नाही!')) return;
+  function openDeleteModal() {
+    setShowDeleteModal(true);
+    setDeleteStep(1);
+    setDeletePass('');
+    setDeleteErr('');
+  }
 
-    // 3rd Password Verification
-    const enteredPass = prompt('🔒 सर्व डेटा मिटवण्याची पुष्टी करण्यासाठी तुमचा प्रोफाइल पासवर्ड टाका:');
-    if (enteredPass === null) return; // User pressed Cancel
-
+  function handleConfirmDelete() {
+    setDeleteErr('');
     const actualPass = profile?.password ? String(profile.password).trim() : '';
-
-    if (enteredPass.trim() === actualPass) {
+    if (deletePass.trim() === actualPass) {
       resetData();
-      if (showToast) showToast('🗑️ सर्व डेटा मिटवला आहे!','ok');
+      if (showToast) showToast('🗑️ सर्व डेटा मिटवला आहे!', 'ok');
       setTimeout(() => window.location.reload(), 400);
     } else {
-      if (showToast) showToast('❌ चुकीचा पासवर्ड! डेटा मिटवला नाही.','err');
-      alert('❌ चुकीचा पासवर्ड! डेटा मिटवला नाही.');
+      setDeleteErr('❌ चुकीचा पासवर्ड! अचूक पासवर्ड प्रविष्ट करा.');
     }
   }
 
@@ -263,7 +265,7 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
           </p>
         </div>
 
-        <ProfRow icon="🗑️" label="सर्व डेटा मिटवा" right="!" danger onClick={doReset} />
+        <ProfRow icon="🗑️" label="सर्व डेटा मिटवा" right="!" danger onClick={openDeleteModal} />
       </div>
 
       {/* Logout Action at the very bottom */}
@@ -288,6 +290,79 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
               </div>
             ))}
             <button className={styles.btnGreen} onClick={saveAnimals}>💾 जतन करा</button>
+          </div>
+        </div>
+      )}
+
+      {/* 2-Step Verification Delete Modal */}
+      {showDeleteModal && (
+        <div className={styles.overlay} onClick={e => e.target === e.currentTarget && setShowDeleteModal(false)}>
+          <div className={styles.deleteModal}>
+            {deleteStep === 1 ? (
+              <>
+                <div className={styles.modalHeaderRow}>
+                  <div className={styles.modalTitleAlert}>🚨 सर्व डेटा मिटवायचा आहे का?</div>
+                  <span className={styles.stepBadgeDanger}>स्टेप १/२</span>
+                </div>
+
+                <div className={styles.dangerAlertBox}>
+                  <div className={styles.dangerAlertTitle}>⚠️ सावधगिरीचा इशारा!</div>
+                  <p className={styles.dangerAlertText}>
+                    हा डेटा मिटवल्यास तुमचा सर्व दैनंदिन हिशोब, दूध नोंदी व जमा-खर्च कायमचा नष्ट होईल.
+                  </p>
+                  <ul className={styles.dangerList}>
+                    <li>❌ मागील सर्व नोंदी मिटवल्या जातील</li>
+                    <li>❌ हा बदल पूर्ववत करता येणार नाही</li>
+                  </ul>
+                </div>
+
+                <div className={styles.modalBtnRow}>
+                  <button className={styles.btnCancelModal} onClick={() => setShowDeleteModal(false)}>
+                    रद्द करा
+                  </button>
+                  <button className={styles.btnDangerNext} onClick={() => setDeleteStep(2)}>
+                    होय, पुढे जा (स्टेप २) →
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.modalHeaderRow}>
+                  <div className={styles.modalTitleAlert}>🔒 पासवर्ड पडताळणी</div>
+                  <span className={styles.stepBadgeDanger}>स्टेप २/२</span>
+                </div>
+
+                <p className={styles.passSubtext}>
+                  डेटा कायमचा मिटवण्याची पुष्टी करण्यासाठी तुमचा प्रोफाइल पासवर्ड প্রविष्ट करा:
+                </p>
+
+                <div className={styles.group}>
+                  <label className={styles.fLabel}>प्रोफाइल पासवर्ड</label>
+                  <input
+                    type="password"
+                    className={styles.fInput}
+                    placeholder="तुमचा पासवर्ड टाका"
+                    value={deletePass}
+                    onChange={e => { setDeleteErr(''); setDeletePass(e.target.value); }}
+                    autoFocus
+                  />
+                </div>
+
+                {deleteErr && <div className={styles.deleteErrorBanner}>{deleteErr}</div>}
+
+                <div className={styles.modalBtnRow}>
+                  <button className={styles.btnCancelModal} onClick={() => setDeleteStep(1)}>
+                    ← मागे
+                  </button>
+                  <button
+                    className={styles.btnFinalDelete}
+                    onClick={handleConfirmDelete}
+                  >
+                    🗑️ सर्व डेटा कायमचा मिटवा
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
