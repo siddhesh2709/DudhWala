@@ -1,13 +1,7 @@
 // Question definitions for Cow daily entry
 export const COW_QS = [
   { id: 'jali',       type: 'num', q: 'आज किती जाळी चारा टाकला?',           suf: 'जाळ्या' },
-  { id: 'jali_kg',    type: 'num', q: '1 जाळी किती किलो?',                   suf: 'KG',
-    calc: e => `एकूण चारा = ${e.jali||0} × ${e.jali_kg||0} = ${((e.jali||0)*(e.jali_kg||0)).toFixed(1)} KG` },
-  { id: 'jali_rate',  type: 'num', q: '1 जाळी चाऱ्याचा दर किती?',           pre: '₹', suf: '/जाळी',
-    calc: (e, fmt) => `चारा खर्च = ${e.jali||0} जाळी × ₹${e.jali_rate||0} = ${fmt((e.jali||0)*(e.jali_rate||0))}` },
   { id: 'kadhai',     type: 'num', q: 'आज किती कढई खाद्य घातले?',           suf: 'कढई' },
-  { id: 'kadhai_kg',  type: 'num', q: '1 कढईमध्ये किती किलो खाद्य असते?',   suf: 'KG',
-    calc: e => `एकूण खाद्य = ${e.kadhai||0} × ${e.kadhai_kg||0} = ${((e.kadhai||0)*(e.kadhai_kg||0)).toFixed(1)} KG` },
   { id: 'milk_morn',  type: 'dec', q: 'आज सकाळी किती दूध निघाले?',          suf: 'L' },
   { id: 'morn_rate',  type: 'num', q: 'सकाळच्या दुधाचा भाव किती?',          pre: '₹', suf: '/L',
     calc: (e, fmt) => `उत्पन्न = ${e.milk_morn||0}L × ₹${e.morn_rate||0} = ${fmt((e.milk_morn||0)*(e.morn_rate||0))}` },
@@ -19,8 +13,9 @@ export const COW_QS = [
   { id: 'goni_bought',type: 'yn',  q: 'आज खाद्याची गोणी आणली का?' },
   { id: 'goni_type',  type: 'sel', q: 'कोणती गोणी आणली?',                   when: e => e.goni_bought === 'yes',
     opts: [{ v: 'kargil', l: 'Kargil' }, { v: 'trans', l: 'Transaction' }, { v: 'maina8', l: '8 Maina Wali' }] },
-  { id: 'goni_cnt',   type: 'num', q: 'किती गोण्या आणल्या?',                suf: 'गोण्या', when: e => e.goni_bought === 'yes',
-    calc: (e, fmt, prices) => { const p = (prices||{})[e.goni_type]||0; return `खर्च = ${e.goni_cnt||0} × ₹${p} = ${fmt((e.goni_cnt||0)*p)}`; } },
+  { id: 'goni_cnt',   type: 'num', q: 'किती गोण्या आणल्या?',                suf: 'गोण्या', when: e => e.goni_bought === 'yes' },
+  { id: 'goni_price', type: 'num', q: 'या गोणीची किंमत / दर किती पडला?',   pre: '₹', suf: '/गोणी', when: e => e.goni_bought === 'yes',
+    calc: (e, fmt) => `गोणी खर्च = ${e.goni_cnt||0} गोणी × ₹${e.goni_price||0} = ${fmt((e.goni_cnt||0)*(e.goni_price||0))}` },
   { id: 'med_bought', type: 'yn',  q: 'आज मेडिकलमधून काही आणले का?' },
   { id: 'med_cost',   type: 'num', q: 'मेडिकलचा खर्च किती झाला?',           pre: '₹', when: e => e.med_bought === 'yes' },
 ];
@@ -28,10 +23,6 @@ export const COW_QS = [
 // Question definitions for Calf daily entry
 export const CALF_QS = [
   { id: 'jali',       type: 'num', q: 'आज वासरांसाठी किती जाळी चारा टाकला?', suf: 'जाळ्या' },
-  { id: 'jali_kg',    type: 'num', q: '1 जाळी किती किलो?',                    suf: 'KG',
-    calc: e => `एकूण चारा = ${e.jali||0} × ${e.jali_kg||0} = ${((e.jali||0)*(e.jali_kg||0)).toFixed(1)} KG` },
-  { id: 'jali_rate',  type: 'num', q: '1 जाळी चाऱ्याचा दर किती?',             pre: '₹', suf: '/जाळी',
-    calc: (e, fmt) => `चारा खर्च = ${e.jali||0} जाळी × ₹${e.jali_rate||0} = ${fmt((e.jali||0)*(e.jali_rate||0))}` },
   { id: 'milk_fed',   type: 'yn',  q: 'आज वासरांना दूध पाजले का?' },
   { id: 'calves_fed', type: 'num', q: 'किती वासरांना दूध पाजले?',            suf: 'वासरे', when: e => e.milk_fed === 'yes' },
   { id: 'milk_liters',type: 'dec', q: 'एकूण किती लिटर दूध पाजले?',           suf: 'L', when: e => e.milk_fed === 'yes',

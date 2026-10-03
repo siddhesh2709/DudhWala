@@ -26,17 +26,19 @@ export default function RecordDetail({ dateKey, type = 'all', record, onBack, on
             <Row l="संध्याकाळ" r={`${c.milk_eve||0}L × ₹${c.eve_rate||0} = ${fmt((c.milk_eve||0)*(c.eve_rate||0))}`}  rc="blue" />
             <Row l="एकूण दूध" r={`${(c.totalMilk||0).toFixed(1)} L`} bold rc="blue" />
           </Section>
-          <Section title="🌾 गाय - चारा">
-            <Row l="जाळी (वजन)" r={`${c.jali||0} जाळी × ${c.jali_kg||0}KG = ${((c.jali||0)*(c.jali_kg||0)).toFixed(1)} KG`} />
+          <Section title="🌾 गाय - चारा व खाद्य">
+            {c.jali > 0 && <Row l="जाळी चारा" r={`${c.jali||0} जाळी`} />}
             {c.jaliCost > 0 && <Row l="जाळी खर्च" r={fmt(c.jaliCost)} rc="red" />}
-            {c.kadhai > 0 && <Row l="कढई" r={`${c.kadhai||0}×${c.kadhai_kg||0}KG=${((c.kadhai||0)*(c.kadhai_kg||0)).toFixed(1)}KG`} />}
+            {c.kadhai > 0 && <Row l="कढई खाद्य" r={`${c.kadhai||0} कढई`} />}
+            {c.kadhaiCost > 0 && <Row l="कढई खाद्य खर्च" r={fmt(c.kadhaiCost)} rc="red" />}
           </Section>
-          {(c.jaliCost || c.drCost || c.goniCost || c.medCost) ? (
+          {(c.jaliCost || c.kadhaiCost || c.drCost || c.goniCost || c.medCost) ? (
             <Section title="💸 गाय - खर्च">
-              {c.jaliCost > 0        && <Row l="🌾 चारा (जाळी)"                 r={fmt(c.jaliCost)} rc="red" />}
-              {c.dr_came==='yes'     && <Row l="🩺 डॉक्टर"                      r={fmt(c.drCost)}   rc="red" />}
-              {c.goni_bought==='yes' && <Row l={`📦 ${GN[c.goni_type]||''} ×${c.goni_cnt}`} r={fmt(c.goniCost)} rc="red" />}
-              {c.med_bought==='yes'  && <Row l="💊 मेडिकल"                      r={fmt(c.medCost)}  rc="red" />}
+              {c.jaliCost > 0        && <Row l="🌾 चारा खर्च"                    r={fmt(c.jaliCost)} rc="red" />}
+              {c.kadhaiCost > 0      && <Row l="🥣 कढई खाद्य खर्च"              r={fmt(c.kadhaiCost)} rc="red" />}
+              {c.dr_came==='yes'     && <Row l="🩺 डॉक्टर खर्च"                 r={fmt(c.drCost)}   rc="red" />}
+              {c.goni_bought==='yes' && <Row l={`📦 ${GN[c.goni_type]||'गोणी'} ×${c.goni_cnt}`} r={fmt(c.goniCost)} rc="red" />}
+              {c.med_bought==='yes'  && <Row l="💊 मेडिकल खर्च"                 r={fmt(c.medCost)}  rc="red" />}
               <Row l="गाय एकूण खर्च" r={fmt(c.totalExpense)} bold rc="red" />
             </Section>
           ) : null}

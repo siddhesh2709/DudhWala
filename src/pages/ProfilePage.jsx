@@ -7,14 +7,22 @@ import styles from './ProfilePage.module.css';
 import { fmt, fmtDate, p2, fmtMonth, MR_MONTHS } from '../store';
 
 export default function ProfilePage({ onSwitchTab, showToast }) {
-  const { state, updatePrices, updateAnimals, importData, resetData } = useApp();
+  const { state, updatePrices, updateAnimals, setProfile, importData, resetData } = useApp();
   const { profile, records } = state;
   const now = new Date();
   const [repMonth, setRepMonth] = useState(new Date());
   const [detailDateKey, setDetailDateKey] = useState(null);
   const [showAnimalModal, setShowAnimalModal] = useState(false);
   const [animalForm, setAnimalForm] = useState({ milking: profile?.milking||0, nonMilk: profile?.nonMilk||0, calves: profile?.calves||0 });
-  const [prices, setPrices] = useState({ jaliRate: profile?.prices?.jaliRate||50, kargil: profile?.prices?.kargil||1250, trans: profile?.prices?.trans||1100, maina8: profile?.prices?.maina8||950 });
+  const [prices, setPrices] = useState({
+    jaliRate: profile?.prices?.jaliRate || 50,
+    jali_kg: profile?.jali_kg || 15,
+    kadhai_kg: profile?.kadhai_kg || 2,
+    khadya_rate: profile?.prices?.khadya_rate || 24,
+    kargil: profile?.prices?.kargil || 1250,
+    trans: profile?.prices?.trans || 1100,
+    maina8: profile?.prices?.maina8 || 950
+  });
 
   const allDates = Object.keys(records).filter(d => records[d]?.cow?.saved || records[d]?.calf?.saved).sort().reverse();
 
@@ -47,8 +55,24 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
     showToast('✅ जतन झाले!','ok');
   }
   function savePrices() {
-    updatePrices({ kargil: Number(prices.kargil)||1250, trans: Number(prices.trans)||1100, maina8: Number(prices.maina8)||950 });
-    showToast('💾 किमती जतन झाल्या!','ok');
+    const updatedPrices = {
+      jaliRate: Number(prices.jaliRate) || 50,
+      khadya_rate: Number(prices.khadya_rate) || 24,
+      kargil: Number(prices.kargil) || 1250,
+      trans: Number(prices.trans) || 1100,
+      maina8: Number(prices.maina8) || 950
+    };
+    updatePrices(updatedPrices);
+    setProfile({
+      ...profile,
+      jali_kg: Number(prices.jali_kg) || 15,
+      kadhai_kg: Number(prices.kadhai_kg) || 2,
+      prices: {
+        ...profile?.prices,
+        ...updatedPrices
+      }
+    });
+    showToast('💾 किमती व दर जतन झाले!','ok');
   }
   function exportData() {
     const b = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
@@ -168,9 +192,17 @@ export default function ProfilePage({ onSwitchTab, showToast }) {
 
       {/* Feed Prices */}
       <div className={styles.section}>
-        <div className={styles.secTitle}>खाद्य व चाऱ्याच्या किमती</div>
+        <div className={styles.secTitle}>खाद्य व चाऱ्याच्या किमती व माप</div>
         <div className={styles.priceForm}>
-          {[['jaliRate','1 जाळी चाऱ्याचा दर (₹)'],['kargil','Kargil गोणी (₹)'],['trans','Transaction गोणी (₹)'],['maina8','8 Maina Wali गोणी (₹)']].map(([k,l]) => (
+          {[
+            ['jaliRate','1 जाळी चाऱ्याचा दर (₹)'],
+            ['jali_kg','1 जाळी चाऱ्याचे वजन (KG)'],
+            ['kadhai_kg','कढई/भांड्याचे माप (KG)'],
+            ['khadya_rate','खाद्याचा दर (₹/KG)'],
+            ['kargil','Kargil गोणी दर (₹)'],
+            ['trans','Transaction गोणी दर (₹)'],
+            ['maina8','8 Maina Wali गोणी दर (₹)']
+          ].map(([k,l]) => (
             <div className={styles.group} key={k}>
               <label className={styles.fLabel}>{l}</label>
               <input className={styles.fInput} type="number" inputMode="numeric" pattern="[0-9]*"

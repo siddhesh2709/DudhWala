@@ -14,6 +14,8 @@ export default function SetupPage({ onDone }) {
   const [form, setForm] = useState({
     farmName: '', ownerName: '',
     milking: 0, nonMilk: 0, calves: 0,
+    jali_kg: 15, jaliRate: 50,
+    kadhai_kg: 2, khadya_rate: 24,
     pkargil: 1250, ptrans: 1100, pmaina: 950,
   });
 
@@ -32,7 +34,11 @@ export default function SetupPage({ onDone }) {
       milking: Number(form.milking) || 0,
       nonMilk: Number(form.nonMilk) || 0,
       calves:  Number(form.calves)  || 0,
+      jali_kg: Number(form.jali_kg) || 15,
+      kadhai_kg: Number(form.kadhai_kg) || 2,
       prices: {
+        jaliRate: Number(form.jaliRate) || 50,
+        khadya_rate: Number(form.khadya_rate) || 24,
         kargil: Number(form.pkargil) || 1250,
         trans:  Number(form.ptrans)  || 1100,
         maina8: Number(form.pmaina)  || 950,
@@ -90,7 +96,15 @@ export default function SetupPage({ onDone }) {
         {step === 2 && (
           <>
             <p className={styles.hint}>नंतर Profile मध्ये बदलता येतील.</p>
-            {[['pkargil','Kargil गोणी (₹)'],['ptrans','Transaction गोणी (₹)'],['pmaina','8 Maina Wali गोणी (₹)']].map(([k,l]) => (
+            {[
+              ['jaliRate','1 जाळी चाऱ्याचा दर (₹)'],
+              ['jali_kg','1 जाळीचे वजन (KG)'],
+              ['kadhai_kg','कढई/भांड्याचे माप (KG)'],
+              ['khadya_rate','खाद्याचा दर (₹/KG)'],
+              ['pkargil','Kargil गोणी दर (₹)'],
+              ['ptrans','Transaction गोणी दर (₹)'],
+              ['pmaina','8 Maina Wali गोणी दर (₹)']
+            ].map(([k,l]) => (
               <div className={styles.group} key={k}>
                 <label className={styles.label}>{l}</label>
                 <input className={styles.input} type="number" inputMode="numeric" pattern="[0-9]*"
